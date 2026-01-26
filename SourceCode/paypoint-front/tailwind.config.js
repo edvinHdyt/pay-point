@@ -13,7 +13,10 @@ export default {
       colors: {
         'primary': '#FBBF24',
         'hover': '#F59E0B',
-        'text': '#0F172A'
+        'primary-text': '#1F2937',
+        'secondary-text': '#374151',
+        'tersier-text': '#6B7280',
+        'disabled-text': '#9CA3AF'
       },
       animation: {
         "slide-down": "slide-down 0.2s ease-out",
@@ -62,6 +65,7 @@ export default {
       }
     },
   },
-  plugins: [],
+  plugins: [
+  ],
 }
 
