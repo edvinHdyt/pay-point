@@ -1,12 +1,11 @@
 import { MainCard } from "../Components/MainCard";
 import { Link } from "react-router-dom";
+import TitlePage from "../Components/TitlePage";
 
 const AddCategory = () => {
     return (
         <>
-            <h1 className="text-2xl text-tersier-text mb-3 font-bold">
-                Add Category
-            </h1>
+            <TitlePage title={'Add Category'}/>
             <MainCard>
                 <form action="">
                     <div className="flex flex-col sm:flex-row sm:item-center sm:gap-4 gap-2  mb-3 font-montserrat mt-3">

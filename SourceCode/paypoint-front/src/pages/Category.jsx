@@ -6,6 +6,7 @@ import {MainCard} from '../Components/MainCard';
 import { useState } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { Link } from 'react-router-dom';
+import TitlePage from '../Components/TitlePage';
 
 const ButtonEdit = () => {
     return (
@@ -35,9 +36,7 @@ const Category = () => {
 
     return (
         <> 
-            <h1 className="text-2xl text-tersier-text font-bold">
-                Category
-            </h1>
+            <TitlePage title={'Category'}/>
 
             <MainCard>
                 <Link to={'add-category'}>

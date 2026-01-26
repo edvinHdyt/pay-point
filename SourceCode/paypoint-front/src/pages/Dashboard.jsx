@@ -1,18 +1,19 @@
 import { Chart as ChartJs } from "chart.js/auto";
 import { Line, Bar } from "react-chartjs-2";
 import {MainCard, MainCardHalf} from "../Components/MainCard";
+import TitlePage from "../Components/TitlePage";
 
 const Dashboard = () => {
     return (
         <div className="font-montserrat">
-            <h1 className="text-2xl font-bold text-tersier-text mb-2">Dashboard</h1>
+            <TitlePage title={'Dashboard'}/>
             <MainCard>
                 <div className="flex justify-center item-center">
                     <div className="w-full flex flex-col justify-center">
                         <h1 className="text-[1.3rem] text-primary-text font-montserrat font-bold">Hallo, John Doe</h1>
                         <p className="text-secondary-text">Ready to start a good day?</p>
                     </div>
-                    <img src="../src/assets/Img/undraw_welcoming_42an.svg" alt="Welcome Illustrator" className="w-60 h-60"/>
+                    <img src="../src/assets/images/undraw_welcoming_42an.svg" alt="Welcome Illustrator" className="w-60 h-60"/>
                 </div>
             </MainCard>
             <section className="flex lg:flex-row flex-col gap-3">
