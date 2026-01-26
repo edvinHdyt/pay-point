@@ -5,6 +5,7 @@ import MainLayout from './layouts/MainLayout.jsx'
 import Dashboard from './pages/Dashboard.jsx'
 import './assets/css/index.css'
 import Category from './pages/Category.jsx'
+import AddCategory from './pages/AddCategory.jsx'
 
 const router = createBrowserRouter ([
  {
@@ -21,7 +22,11 @@ const router = createBrowserRouter ([
       },
       {
         path: "category",
-        element: <Category />
+        element: <Category />,
+      },
+      {
+        path: "category/add-category",
+        element: <AddCategory />
       }
     ]
   }
