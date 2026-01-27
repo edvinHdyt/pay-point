@@ -7,6 +7,7 @@ import './assets/css/index.css'
 import Category from './pages/Category.jsx'
 import AddCategory from './pages/AddCategory.jsx'
 import Product from './pages/Products.jsx'
+import Payment from './pages/Payment.jsx'
 
 const router = createBrowserRouter ([
  {
@@ -32,6 +33,10 @@ const router = createBrowserRouter ([
       {
         path: 'product',
         element: <Product />
+      },
+      {
+        path: 'product/payment',
+        element: <Payment />
       }
     ]
   }

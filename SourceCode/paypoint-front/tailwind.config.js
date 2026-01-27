@@ -25,6 +25,8 @@ export default {
         "slide-left": "slide-left 0.5s ease-out",
         "modal-slide-down": "modal-slide-down 0.5s ease-in",
         "modal-slide-up": "modal-slide-up 0.5s ease-out",
+        "modal-show" : "modal-show 0.2s ease-in",
+        "modal-hide" : "modal-hide 0.2s ease-in",
       },
       keyframes: {
         "slide-down": {
@@ -81,6 +83,20 @@ export default {
           },
           '100%': {
             transform: 'translateY(-30rem)',
+            opacity: '0'
+          }
+        },
+        "modal-show" : {
+          '0%' : {
+            opacity: '0'
+          }, '100%' : {
+            opacity: '100'
+          }
+        },
+        "modal-hide" : {
+          '0%' : {
+            opacity: '100'
+          }, '100%' : {
             opacity: '0'
           }
         }

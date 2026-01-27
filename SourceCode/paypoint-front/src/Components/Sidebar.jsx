@@ -30,7 +30,7 @@ const Sidebar = (propsSidebar) => {
                 <h2 className="text-2xl font-bold">
                     Paypoint
                 </h2>
-                <button className="absolute right-[-1rem] bg-primary w-10 h-10 border-0 rounded-md justify-center items-center flex lg:hidden" onClick={propsSidebar.handlerSidebar.toggleSidebar}>
+                <button className="absolute right-[-1rem] bg-primary w-10 h-10 border-0 rounded-md justify-center items-center flex lg:hidden active:translate-y-[2px] transition duration-75" onClick={propsSidebar.handlerSidebar.toggleSidebar}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="m12 13.4l-4.9 4.9q-.275.275-.7.275t-.7-.275t-.275-.7t.275-.7l4.9-4.9l-4.9-4.9q-.275-.275-.275-.7t.275-.7t.7-.275t.7.275l4.9 4.9l4.9-4.9q.275-.275.7-.275t.7.275t.275.7t-.275.7L13.4 12l4.9 4.9q.275.275.275.7t-.275.7t-.7.275t-.7-.275z"/></svg>
                 </button>
             </div>
