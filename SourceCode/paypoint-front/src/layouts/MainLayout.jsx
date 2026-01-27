@@ -3,6 +3,7 @@ import { Outlet } from "react-router-dom";
 import Navbar from "../Components/navbar";
 import Footer from "../Components/Footer";
 import Sidebar from "../Components/Sidebar";
+import { ModalCart } from "../Components/Modals";
 
 const Breadcrumb = () => {
     return (
@@ -33,24 +34,43 @@ const Breadcrumb = () => {
 const MainLayout = () => {
     const [isSidebarOpen, setIsSideBarOpen] = useState(false);
     const [isRefresh, setIsRefresh] = useState(true);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isModalCartOpen, setIsModalCartOpen] = useState(false);
     
     const toggleSidebar = () => {
         setIsSideBarOpen(!isSidebarOpen);
         setIsRefresh(false);
     }
 
+    const closeModalCart = () => {       
+        setIsModalCartOpen(false); 
+        setIsModalOpen(false);
+    }
+
+    const openModalCart = () => {
+        setIsModalCartOpen(true);
+        setIsModalOpen(true);
+    }
+
     return (
-        <div className="lg:flex relative">
-            <Sidebar handlerSidebar={{isSidebarOpen, toggleSidebar, isRefresh}}/>
-            <div className="flex flex-col w-full">
-                <Navbar toggleSidebar={toggleSidebar}/>
-                <main className="px-20 min-h-[79vh]">
-                    {/* <Breadcrumb /> */}
-                    <Outlet />
-                </main>
-            <Footer />
+        <>
+            <div className={`bg-[rgba(0,0,0,0.6)] w-full z-40 h-full fixed top-0 ${isModalOpen ? 'block': 'hidden'}`}>
             </div>
-        </div>
+
+            <div className={`lg:flex relative z-30 ${isModalOpen ? 'blur-sm' : ""}`}>
+                <Sidebar handlerSidebar={{isSidebarOpen, toggleSidebar, isRefresh}}/>
+                <div className="flex flex-col w-full">
+                    <Navbar toggleSidebar={toggleSidebar} openModalCart={openModalCart}/>
+                    <main className="px-20 min-h-[79vh]">
+                        {/* <Breadcrumb /> */}
+                        <Outlet />
+                    </main>
+                <Footer />
+                </div>
+            </div>
+            <ModalCart isModalCartOpen={isModalCartOpen} closeModalCart={closeModalCart} />
+        </>
+        
     )
 }
 

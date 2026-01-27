@@ -1,5 +1,6 @@
 import TitlePage from "../Components/TitlePage"
 import { ProductCard } from "../Components/MainCard";
+import { ModalCart } from "../Components/Modals";
 
 const Product = () => {
     return (
@@ -27,6 +28,7 @@ const Product = () => {
                 <ProductCard />
                 <ProductCard />
             </section>
+
         </>
     )
 }
