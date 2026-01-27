@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TitlePage from "./TitlePage"
 
 const CartProduct = (props) => {
@@ -59,6 +59,25 @@ const CartProduct = (props) => {
 
 const ModalCart = (props) => {
     const [isCartEmpty, setIsCartEmpty] = useState(false);
+    const [isHidden, setIsHidden] = useState(true);
+
+    useEffect(() => {
+        let timerId;
+        if (props.isModalCartOpen){
+            timerId = setTimeout(() => {
+                setIsHidden(false);
+            }, 0);
+        }else {
+            timerId = setTimeout(() => {
+                setIsHidden(true);
+            }, 500);
+        }
+
+        return () => {
+            clearTimeout(timerId);
+        }
+        
+    }, [props.isModalCartOpen]);
 
     const countItem = () => {
         const elm = document.getElementById("products");
@@ -69,7 +88,7 @@ const ModalCart = (props) => {
 
     return (
         <>
-            <div className={`bg-white w-10/12 fixed z-50  py-4 px-6 top-[10%] shadow-md rounded-md lg:left-[10rem] left-[10%] font-montserrat min-h-96 ${props.isModalCartOpen ? 'block' : 'hidden'}`}>
+            <div className={`bg-white w-10/12 fixed z-50  py-4 px-6 top-[10%] shadow-md rounded-md lg:left-[10rem] left-[10%] font-montserrat min-h-96  ${props.isModalCartOpen ? 'animate-modal-slide-down block translate-y-0' : `animate-modal-slide-up translate-y-[-30rem] ${isHidden ? 'hidden': ''}`}`}>
                 <div className="flex justify-between item-center mb-3">
                     <TitlePage title={"Cart"}/>
                     <button className="flex justify-center items-center bg-slate-100 w-10 h-10 rounded-md shadow-sm active:translate-y-[2px] transition duration-75 border-[0.8px] border-gray-300" onClick={props.closeModalCart}>
