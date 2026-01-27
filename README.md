@@ -1,8 +1,6 @@
 # 💳 PayPoint — Web-Based POS (Kasir Management System)
 
-**PayPoint** adalah aplikasi **Point of Sale (POS) berbasis web** yang dirancang untuk membantu UMKM, toko retail, dan café dalam mengelola transaksi penjualan, produk, dan laporan secara efisien.
-
-Project ini dikembangkan sebagai **project portfolio dan pembelajaran fullstack**, menggunakan **stack MERN (MongoDB, Express, React, Node.js)** dengan pendekatan modern dan scalable.
+**PayPoint** adalah sebuah website yang dirancang untuk memanagement sistem kasir pada sebuah Toko/UMKM. Website ini dibangun dengan stack MERN (Mongo DB, Express JS, React JS, dan Node JS) dan diperuntukan untuk pembelajaran. Bagian Frontend dan Backend pada website ini dipisahkan menjadi 2 dan dihubungkan dengan REST API.
 
 ---
 
