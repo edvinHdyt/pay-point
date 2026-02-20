@@ -6,7 +6,8 @@ const ProfilePict = (toggle) => {
     return (
         <>
             <div className="border-0 rounded-[20px] w-10 h-10 bg-slate-300 flex justify-center items-center cursor-pointer text-5xl" onClick={toggle.toggleProfileDropdown}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="currentColor" d="M12 12q-1.65 0-2.825-1.175T8 8t1.175-2.825T12 4t2.825 1.175T16 8t-1.175 2.825T12 12m-8 8v-2.8q0-.85.438-1.562T5.6 14.55q1.55-.775 3.15-1.162T12 13t3.25.388t3.15 1.162q.725.375 1.163 1.088T20 17.2V20z"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" id="profileIconNav"><path fill="currentColor" d="M12 12q-1.65 0-2.825-1.175T8 8t1.175-2.825T12 4t2.825 1.175T16 8t-1.175 2.825T12 12m-8 8v-2.8q0-.85.438-1.562T5.6 14.55q1.55-.775 3.15-1.162T12 13t3.25.388t3.15 1.162q.725.375 1.163 1.088T20 17.2V20z"/></svg>
+                <img src={".."} alt="profile-pict-navbar" className="w-full h-full rounded-[20px] hidden" id="profilePictNav" />
             </div>
         </>
     )
@@ -16,7 +17,7 @@ const ProfileDropdown = (toggle) => {
     return (
     <div className={`absolute w-56 h-100 top-12 bg-white right-28 rounded-md shadow-md border-[0.8px] border-gray-200  ${toggle.toggleDropdown.isHidden ? 'hidden': ''}  ${toggle.toggleDropdown.isDropProfileOpen ? `animate-slide-up opacity-100 ` : `animate-slide-down opacity-0 translate-y-14 `} `} id="profileDropdown">
         <ul className="font-montserrat text-gray-700">
-            <Link>
+            <Link to={'profile'}>
                 <li className="px-5 py-3 mb-1 flex items-center hover:bg-hover border-b-[1px] border-gray-100">
                     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="currentColor" d="M12 12q-1.65 0-2.825-1.175T8 8t1.175-2.825T12 4t2.825 1.175T16 8t-1.175 2.825T12 12m-8 8v-2.8q0-.85.438-1.562T5.6 14.55q1.55-.775 3.15-1.162T12 13t3.25.388t3.15 1.162q.725.375 1.163 1.088T20 17.2V20z"/></svg>
                     <p className="ms-2">John Doe</p>

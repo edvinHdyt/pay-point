@@ -3,7 +3,9 @@ import { Outlet } from "react-router-dom";
 import Navbar from "../Components/navbar";
 import Footer from "../Components/Footer";
 import Sidebar from "../Components/Sidebar";
-import { ModalCart, ModalAlertMsg } from "../Components/Modals";
+import { ModalCart, ModalAlertMsg, ModalConfEmail,
+    ModalChangePass
+ } from "../Components/Modals";
 
 const Breadcrumb = () => {
     return (
@@ -39,6 +41,8 @@ const MainLayout = () => {
     const [cartLength, setCartLength] = useState(0);
     const [alertMsg, setAlertMsg] = useState("");
     const [isModalAlertOpen, setIsModalAlertOpen] = useState(false);
+    const [isModalConfEmaiLOpen, setIsModalConfEmailOpen] = useState(false);
+    const [isModalChangePassOpen, setIsModalChangePassOpen] = useState(false);
     
     const handlingCartLength = () => {
         setCartLength(cartLength + 1);
@@ -69,6 +73,27 @@ const MainLayout = () => {
         setIsModalAlertOpen(false);
     }
 
+    const openConfEmailModal = () => {
+        setIsModalConfEmailOpen(true);
+        setIsModalOpen(true);
+    }
+
+    const closeConfEmailModal = () => {
+        setIsModalConfEmailOpen(false);
+        setIsModalOpen(false);
+    }
+
+    const openChangePassModal = () => {
+        setIsModalChangePassOpen(true);
+        setIsModalOpen(true);
+        console.log("test")
+    }
+
+    const closeChangePassModal = () => {
+        setIsModalChangePassOpen(false);
+        setIsModalOpen(false);
+    }
+
     return (
         <>
             <div className={`bg-[rgba(0,0,0,0.6)] w-full z-40 h-full fixed top-0 ${isModalOpen ? 'block': 'hidden'}`}>
@@ -80,13 +105,15 @@ const MainLayout = () => {
                     <Navbar toggleSidebar={toggleSidebar} openModalCart={openModalCart} cartLength={cartLength}/>
                     <main className="px-20 min-h-[79vh]">
                         {/* <Breadcrumb /> */}
-                        <Outlet context={{handlingCartLength, openAlertModal}}/>
+                        <Outlet context={{handlingCartLength, openAlertModal, openConfEmailModal}}/>
                     </main>
                 <Footer />
                 </div>
             </div>
             <ModalCart isModalCartOpen={isModalCartOpen} closeModalCart={closeModalCart} />
             <ModalAlertMsg alertMsg={alertMsg} isModalAlertOpen={isModalAlertOpen} closeAlertModal={closeAlertModal}/>
+            <ModalConfEmail isModalConfEmaiLOpen={isModalConfEmaiLOpen} funcModal={{closeConfEmailModal, openChangePassModal}}/>
+            <ModalChangePass isModalChangePassOpen={isModalChangePassOpen} closeChangePassModal={closeChangePassModal}/>
         </>
         
     )

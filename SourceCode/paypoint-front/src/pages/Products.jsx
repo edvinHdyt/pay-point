@@ -1,6 +1,5 @@
 import TitlePage from "../Components/TitlePage"
 import { ProductCard } from "../Components/MainCard";
-import { ModalCart } from "../Components/Modals";
 import { useOutletContext } from "react-router-dom";
 
 const Product = () => {

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import TitlePage from "./TitlePage";
+import { BtnPrimary } from "./Button";
 
 const CartProduct = (props) => {
     const getImageUrl = (name) => {
@@ -124,7 +125,6 @@ const ModalCart = (props) => {
 }
 
 const ModalAlertMsg = (props) => {
-    console.log(props.isModalAlertOpen)
     useEffect(() => {
         if (props.isModalAlertOpen){
             setTimeout(() => {
@@ -146,4 +146,149 @@ const ModalAlertMsg = (props) => {
     )
 }
 
-export {ModalCart, CartProduct, ModalAlertMsg};
+const ModalConfEmail = (props) => {
+    const [isHidden, setIsHidden] = useState(true);
+
+    useEffect(() => {
+       let timerId;
+
+       if(props.isModalConfEmaiLOpen){
+            timerId = setTimeout(() => {
+                setIsHidden(false);
+            }, 0);
+       } else {
+            timerId = setTimeout(() => {
+                setIsHidden(true);
+            }, 200);
+       }
+
+       return () => {
+            clearTimeout(timerId);
+       }
+    }, [props.isModalConfEmaiLOpen]);
+
+    const openModalChPass = () => {
+        props.funcModal.closeConfEmailModal()
+        props.funcModal.openChangePassModal()
+    }
+
+    return(
+        <>
+            <div className={`sm:w-[33rem] w-[28rem] p-3 bg-white z-50 fixed md:top-36 top-44 lg:left-[35%] md:left-[20%] left-[5%] border-[0.8px] border-gray-200 shadow-sm rounded-md min-h-56 px-5 ${props.isModalConfEmaiLOpen ? 'animate-modal-slide-down block translate-y-0' : `animate-modal-slide-up translate-y-[-30rem] ${isHidden ? 'hidden': ''}`} `}>
+                <div className="flex justify-between mb-3 items-center">
+                    <TitlePage title={"Konfirmasi Email"}/>
+                    <button className="flex justify-center items-center bg-red-500 text-white w-10 h-10 rounded-md shadow-sm active:translate-y-[2px] transition duration-75 border-[0.8px] border-gray-300" onClick={props.funcModal.closeConfEmailModal}>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="m12 13.4l-4.9 4.9q-.275.275-.7.275t-.7-.275t-.275-.7t.275-.7l4.9-4.9l-4.9-4.9q-.275-.275-.275-.7t.275-.7t.7-.275t.7.275l4.9 4.9l4.9-4.9q.275-.275.7-.275t.7.275t.275.7t-.275.7L13.4 12l4.9 4.9q.275.275.275.7t-.275.7t-.7.275t-.7-.275z"/></svg>
+                    </button>
+                </div>
+                <hr />
+                <form action="" method="post" className="relative min-h-[9rem]">
+                    <div className="flex gap-3 flex-col mb-3">
+                        <div className="flex flex-wrap gap-2">
+                            <label htmlFor="email">Email</label>
+                            <input type="email" id="email" className="w-full h-8 border-[0.8px] border-gray-300 rounded-md px-3 py-5 outline-primary" placeholder="Email"/>
+                        </div>
+                    </div>
+                    
+                    <div className="flex justify-end absolute bottom-0 right-0">
+                         <button className="flex bg-blue-500 text-white rounded-md p-2 items-center justify-center shadow-sm active:translate-y-[2px] transition duration-75" type="button" onClick={openModalChPass}>
+                            Submit
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </>
+    )
+}
+
+const ModalChangePass = (props) => {
+    const [isHidden, setIsHidden] = useState(true);
+    const [isPassVisible, setIsPassVisibel] = useState(false);
+    const [isConfPassVisible, setIsConfPassVisible] = useState(false);
+
+    useEffect(() => {
+       let timerId;
+
+       if(props.isModalChangePassOpen){
+            timerId = setTimeout(() => {
+                setIsHidden(false);
+            }, 0);
+       } else {
+            timerId = setTimeout(() => {
+                setIsHidden(true);
+            }, 200);
+       }
+
+       return () => {
+            clearTimeout(timerId);
+       }
+    }, [props.isModalChangePassOpen]);
+
+    const handlePassVisible = () => {
+        setIsPassVisibel(true);
+    }
+
+    const handlePassInvisible = () => {
+        setIsPassVisibel(false);
+    }
+
+    const handleConfPassVisible = () => {
+        setIsConfPassVisible(true);
+    }
+
+    const handleConfPassInvisible = () => {
+        setIsConfPassVisible(false);
+    }
+
+    return(
+        <>
+            <div className={`sm:w-[33rem] w-[28rem] p-3 bg-white z-50 fixed md:top-36 top-44 lg:left-[35%] md:left-[20%] left-[5%] border-[0.8px] border-gray-200 shadow-sm rounded-md min-h-56 px-5 ${props.isModalChangePassOpen ? 'animate-modal-slide-down block translate-y-0' : `animate-modal-slide-up translate-y-[-30rem] ${isHidden ? 'hidden': ''}`} `}>
+                <div className="flex justify-between mb-3 items-center">
+                    <TitlePage title={"Ubah Password"}/>
+                    <button className="flex justify-center items-center bg-red-500 text-white w-10 h-10 rounded-md shadow-sm active:translate-y-[2px] transition duration-75 border-[0.8px] border-gray-300" onClick={props.closeChangePassModal}>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="m12 13.4l-4.9 4.9q-.275.275-.7.275t-.7-.275t-.275-.7t.275-.7l4.9-4.9l-4.9-4.9q-.275-.275-.275-.7t.275-.7t.7-.275t.7.275l4.9 4.9l4.9-4.9q.275-.275.7-.275t.7.275t.275.7t-.275.7L13.4 12l4.9 4.9q.275.275.275.7t-.275.7t-.7.275t-.7-.275z"/></svg>
+                    </button>
+                </div>
+                <hr />
+                <form action="" method="post" >
+                    <div className="flex gap-3 flex-col mb-3">
+                        <div className="flex flex-wrap gap-2 relative">
+                            <label htmlFor="password">New Password</label>
+                            <input type={`${isPassVisible ? "text" : "password"}`} id="password" className="w-full h-8 border-[0.8px] border-gray-300 rounded-md px-3 py-5 outline-primary" placeholder="Password"/>
+                            <button className={`w-[2.3rem] h-[2.3rem] bg-white ${isPassVisible ? "hidden" : "flex"} justify-center items-center rounded-sm cursor-pointer absolute bottom-[0.05rem] right-[0.07rem] text-slate-500`} type="button" onClick={handlePassVisible}>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><g fill="none"><path d="m12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.018-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z"/><path fill="currentColor" d="M12 5c3.679 0 8.162 2.417 9.73 5.901c.146.328.27.71.27 1.099c0 .388-.123.771-.27 1.099C20.161 16.583 15.678 19 12 19s-8.162-2.417-9.73-5.901C2.124 12.77 2 12.389 2 12c0-.388.123-.771.27-1.099C3.839 7.417 8.322 5 12 5m0 3a4 4 0 1 0 0 8a4 4 0 0 0 0-8m0 2a2 2 0 1 1 0 4a2 2 0 0 1 0-4"/></g></svg>
+                            </button>
+                            <button className={`w-[2.3rem] h-[2.3rem] bg-white justify-center items-center rounded-sm cursor-pointer absolute bottom-[0.05rem] right-[0.07rem] text-slate-500 ${isPassVisible ? "flex" : 'hidden'}`} type="button" onClick={handlePassInvisible}>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="m9.343 18.782l-1.932-.518l.787-2.939a11 11 0 0 1-3.237-1.872l-2.153 2.154l-1.414-1.414l2.153-2.154a10.96 10.96 0 0 1-2.371-5.07l1.968-.359a9.002 9.002 0 0 0 17.713 0l1.968.358a10.96 10.96 0 0 1-2.372 5.071l2.154 2.154l-1.414 1.414l-2.154-2.154a11 11 0 0 1-3.237 1.872l.788 2.94l-1.932.517l-.788-2.94a11 11 0 0 1-3.74 0z"/></svg>
+                            </button>
+                        </div>
+                        <div className="flex flex-wrap gap-2 relative">
+                            <label htmlFor="confPass">Confirm Password</label>
+                            <input type={`${isConfPassVisible ? "text" : "password"}`} id="confPass" className="w-full h-8 border-[0.8px] border-gray-300 rounded-md px-3 py-5 outline-primary" placeholder="Confirm Password"/>
+                            <button className={`w-[2.3rem] h-[2.3rem] bg-white ${isConfPassVisible ? 'hidden' : 'flex'} justify-center items-center rounded-sm cursor-pointer absolute bottom-[0.05rem] right-[0.07rem] text-slate-500`} type="button" onClick={handleConfPassVisible}>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><g fill="none"><path d="m12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.018-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z"/><path fill="currentColor" d="M12 5c3.679 0 8.162 2.417 9.73 5.901c.146.328.27.71.27 1.099c0 .388-.123.771-.27 1.099C20.161 16.583 15.678 19 12 19s-8.162-2.417-9.73-5.901C2.124 12.77 2 12.389 2 12c0-.388.123-.771.27-1.099C3.839 7.417 8.322 5 12 5m0 3a4 4 0 1 0 0 8a4 4 0 0 0 0-8m0 2a2 2 0 1 1 0 4a2 2 0 0 1 0-4"/></g></svg>
+                            </button>
+                            <button className={`w-[2.3rem] h-[2.3rem] bg-white justify-center items-center rounded-sm cursor-pointer absolute bottom-[0.05rem] right-[0.07rem] text-slate-500 ${isConfPassVisible ? "flex" : "hidden"}`}  type="button" onClick={handleConfPassInvisible}>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="m9.343 18.782l-1.932-.518l.787-2.939a11 11 0 0 1-3.237-1.872l-2.153 2.154l-1.414-1.414l2.153-2.154a10.96 10.96 0 0 1-2.371-5.07l1.968-.359a9.002 9.002 0 0 0 17.713 0l1.968.358a10.96 10.96 0 0 1-2.372 5.071l2.154 2.154l-1.414 1.414l-2.154-2.154a11 11 0 0 1-3.237 1.872l.788 2.94l-1.932.517l-.788-2.94a11 11 0 0 1-3.74 0z"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div className="flex justify-end">
+                         <button className="flex bg-blue-500 text-white rounded-md p-2 items-center justify-center shadow-sm active:translate-y-[2px] transition duration-75" type="button" >
+                            Submit
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </>
+    )
+}
+
+export {
+    ModalCart,
+    CartProduct,
+    ModalAlertMsg,
+    ModalConfEmail,
+    ModalChangePass
+};
