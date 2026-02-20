@@ -27,10 +27,12 @@ const Sidebar = (propsSidebar) => {
     return (
         <div className={`w-full  sm:w-80 z-50 left-0 top-0 bg-slate-50 py-5 px-10 flex flex-col font-montserrat lg:border-[2px] h-screen fixed lg:sticky lg:translate-x-0  ${propsSidebar.handlerSidebar.isSidebarOpen ? 'animate-slide-right translate-x-[0]' :`${animSlideLeft} translate-x-[-40rem]`}`}>
             <div className="flex justify-center items-center mb-3 relative">
-                <h2 className="text-2xl font-bold">
-                    Paypoint
-                </h2>
-                <button className="absolute right-[-1rem] bg-primary w-10 h-10 border-0 rounded-md justify-center items-center flex lg:hidden active:translate-y-[2px] transition duration-75" onClick={propsSidebar.handlerSidebar.toggleSidebar}>
+                <div className="w-32 h-auto bg-primary flex justify-center items-center rounded-md shadow-md">
+                    <h2 className="text-2xl font-bold">
+                        Paypoint
+                    </h2>
+                </div>
+                <button className="absolute right-[-1rem] bg-red-600 text-white w-10 h-10 border-0 rounded-md justify-center items-center flex lg:hidden active:translate-y-[2px] transition duration-75" onClick={propsSidebar.handlerSidebar.toggleSidebar}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="m12 13.4l-4.9 4.9q-.275.275-.7.275t-.7-.275t-.275-.7t.275-.7l4.9-4.9l-4.9-4.9q-.275-.275-.275-.7t.275-.7t.7-.275t.7.275l4.9 4.9l4.9-4.9q.275-.275.7-.275t.7.275t.275.7t-.275.7L13.4 12l4.9 4.9q.275.275.275.7t-.275.7t-.7.275t-.7-.275z"/></svg>
                 </button>
             </div>
@@ -47,7 +49,7 @@ const Sidebar = (propsSidebar) => {
                     <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24"><path fill="currentColor" d="M7 22q-.825 0-1.412-.587T5 20t.588-1.412T7 18t1.413.588T9 20t-.587 1.413T7 22m10 0q-.825 0-1.412-.587T15 20t.588-1.412T17 18t1.413.588T19 20t-.587 1.413T17 22M5.2 4h14.75q.575 0 .875.513t.025 1.037l-3.55 6.4q-.275.5-.737.775T15.55 13H8.1L7 15h12v2H7q-1.125 0-1.7-.987t-.05-1.963L6.6 11.6L3 4H1V2h3.25z"/></svg>
                     <span className="ms-2 text-secondary-text">Poduct</span>
                 </NavLink>
-                <NavLink to={"product"} className={({ isActive }) =>isActive ? "px-4 py-3 border-0 rounded-md flex item-center mb-2 hover:bg-hover bg-primary" : "px-4 py-3 border-0 rounded-md flex item-center mb-2 hover:bg-hover"}>
+                <NavLink to={"product-master"} className={({ isActive }) =>isActive ? "px-4 py-3 border-0 rounded-md flex item-center mb-2 hover:bg-hover bg-primary" : "px-4 py-3 border-0 rounded-md flex item-center mb-2 hover:bg-hover"}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24"><path fill="currentColor" d="M7 22q-.825 0-1.412-.587T5 20t.588-1.412T7 18t1.413.588T9 20t-.587 1.413T7 22m10 0q-.825 0-1.412-.587T15 20t.588-1.412T17 18t1.413.588T19 20t-.587 1.413T17 22M5.2 4h14.75q.575 0 .875.513t.025 1.037l-3.55 6.4q-.275.5-.737.775T15.55 13H8.1L7 15h12v2H7q-1.125 0-1.7-.987t-.05-1.963L6.6 11.6L3 4H1V2h3.25z"/></svg>
                     <span className="ms-2 text-secondary-text">Product Master</span>
                 </NavLink>

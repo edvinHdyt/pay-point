@@ -9,6 +9,7 @@ import AddCategory from './pages/AddCategory.jsx'
 import Product from './pages/Products.jsx'
 import Payment from './pages/Payment.jsx'
 import Profile from './pages/Profile.jsx'
+import ProductMaster from './pages/ProductMaster.jsx'
 
 const router = createBrowserRouter ([
  {
@@ -34,6 +35,10 @@ const router = createBrowserRouter ([
       {
         path: 'product',
         element: <Product />
+      },
+      {
+        path: 'product-master',
+        element: <ProductMaster />
       },
       {
         path: 'product/payment',
