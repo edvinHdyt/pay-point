@@ -10,6 +10,8 @@ import Product from './pages/Products.jsx'
 import Payment from './pages/Payment.jsx'
 import Profile from './pages/Profile.jsx'
 import ProductMaster from './pages/ProductMaster.jsx'
+import LoginLayout from './layouts/LoginLayout.jsx'
+import Login from './pages/Auth/Login.jsx'
 
 const router = createBrowserRouter ([
  {
@@ -47,6 +49,16 @@ const router = createBrowserRouter ([
       {
         path: 'profile',
         element: <Profile />
+      }
+    ]
+  },
+  {
+    path: 'login',
+    element: <LoginLayout />,
+    children: [
+      {
+        index: true,
+        element: <Login />
       }
     ]
   }

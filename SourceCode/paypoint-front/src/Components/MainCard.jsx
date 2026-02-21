@@ -51,4 +51,12 @@ const ProductCard = (props) => {
     )
 }
 
-export {MainCard, MainCardHalf, ProductCard};
+const LoginCard = ({children}) => {
+    return(
+        <div className="w-96 py-3 px-5 bg-white shadow-sm border-[0.8px] border-slate-300 rounded-md  mb-5 mt-3 flex flex-col gap-2 ">
+            {children}
+        </div>
+    )
+}
+
+export {MainCard, MainCardHalf, ProductCard, LoginCard};
