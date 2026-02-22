@@ -5,3 +5,12 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  @font-face {
+    font-family: 'gibed';
+    src: url('../fonts/gibed.otf') format('otf');
+    font-weight: 500;
+    font-style: normal;
+  }
+}

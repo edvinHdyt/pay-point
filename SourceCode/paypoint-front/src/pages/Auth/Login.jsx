@@ -25,7 +25,7 @@ const Login = () => {
             <div className="md:w-[50%] h-screen lg:border-[0.8px] lg:border-gray-300 lg:shadow-md rounded-[2rem] z-20 flex justify-center items-center lg:bg-slate-100 bg-transparent">
                 <LoginCard>
                     <div className="flex flex-col item-center justify-center items-center">
-                        <h1 className="text-primary-text text-xl">Welcome back!</h1>
+                        <h1 className="text-primary-text text-xl font-gibed">Welcome back!</h1>
                         <p className="text-md text-tersier-text">Pelase Login</p>
                     </div>
                     <form action="" method="post" className="flex flex-col gap-3">

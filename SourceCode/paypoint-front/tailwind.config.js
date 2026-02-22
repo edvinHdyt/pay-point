@@ -9,6 +9,7 @@ export default {
     extend: {
       fontFamily: {
         'montserrat': ['"Monstserrat"', "sans-serif"],
+        'gibed': ['"gibed"', "sans-serif"],
       },
       colors: {
         'primary': '#FBBF24',
