@@ -12,6 +12,8 @@ import Profile from './pages/Profile.jsx'
 import ProductMaster from './pages/ProductMaster.jsx'
 import LoginLayout from './layouts/LoginLayout.jsx'
 import Login from './pages/Auth/Login.jsx'
+import Register from './pages/Auth/Register.jsx'
+import ForgotPassword from './pages/Auth/ForgotPassword.jsx'
 
 const router = createBrowserRouter ([
  {
@@ -53,12 +55,24 @@ const router = createBrowserRouter ([
     ]
   },
   {
-    path: 'login',
+    path: 'auth',
     element: <LoginLayout />,
     children: [
       {
         index: true,
         element: <Login />
+      },
+      {
+        path: 'login',
+        element: <Login />
+      },
+      {
+        path: 'register',
+        element: <Register />
+      },
+      {
+        path: 'forgot-password',
+        element: <ForgotPassword/>
       }
     ]
   }

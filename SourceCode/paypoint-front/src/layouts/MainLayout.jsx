@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Outlet } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 import Navbar from "../Components/navbar";
 import Footer from "../Components/Footer";
 import Sidebar from "../Components/Sidebar";
@@ -86,12 +86,20 @@ const MainLayout = () => {
     const openChangePassModal = () => {
         setIsModalChangePassOpen(true);
         setIsModalOpen(true);
-        console.log("test")
     }
 
     const closeChangePassModal = () => {
         setIsModalChangePassOpen(false);
         setIsModalOpen(false);
+    }
+
+
+    const [keyUserLogin, setKeyUserLogin] = useState("USER-LOGIN-KEY");
+    
+    const userLogin = localStorage.getItem(keyUserLogin);
+
+    if(userLogin == null){
+        return <Navigate to="/auth" replace/>
     }
 
     return (
