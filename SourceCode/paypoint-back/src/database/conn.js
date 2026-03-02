@@ -1,6 +1,7 @@
-require("dotenv").config();
+import dotnev from 'dotenv';
+dotnev.config();
 
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const uri = process.env.ATLAS_URI;
 const main = async() => {
