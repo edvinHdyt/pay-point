@@ -71,6 +71,7 @@ const Register = () => {
             confPassErrMsg.innerText = "Password dan Confirm password harus sama!";
             setIsPassConfErr(true);
         } else {
+            const apiUrl = import.meta.env.VITE_API_URL;
             try {
                 const data = {
                     name: username,
@@ -78,14 +79,17 @@ const Register = () => {
                     password: pass
                 };
         
-                const apiUrl = import.meta.env.VITE_API_URL;
                 const res = await axios.post(`${apiUrl}auth/register`, data, {headers : {'Content-Type': 'application/json'}});
-                setAlertMsg(res.data);
-                console.log(res)
-                setIsSuccAlertHidden(false);
+                const resData = res.data;
+                if (resData.status == 200){
+                    setAlertMsg(res.data.msg);
+                    setIsSuccAlertHidden(false);
+                }else {
+                    throw new Error(resData.msg);
+                }
+
             } catch (error) {
-                setAlertMsg(error);
-                console.log(error)
+                setAlertMsg(error.message);
                 setIsDangerAlertHidden(false);
             }
         }

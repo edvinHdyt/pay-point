@@ -94,13 +94,13 @@ const MainLayout = () => {
     }
 
 
-    const [keyUserLogin, setKeyUserLogin] = useState("USER-LOGIN-KEY");
+    // const [keyUserLogin, setKeyUserLogin] = useState("USER-LOGIN-KEY");
     
-    const userLogin = localStorage.getItem(keyUserLogin);
+    // const userLogin = localStorage.getItem(keyUserLogin);
 
-    if(userLogin == null){
-        return <Navigate to="/auth" replace/>
-    }
+    // if(userLogin == null){
+    //     return <Navigate to="/auth" replace/>
+    // }
 
     return (
         <>
