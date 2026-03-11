@@ -1,4 +1,4 @@
-import { Route, Link, NavLink } from "react-router-dom";
+import { Route, Link, NavLink, Navigate, useNavigate } from "react-router-dom";
 import {  useState, useEffect } from "react";
 
 
@@ -14,6 +14,13 @@ const ProfilePict = (toggle) => {
 }
 
 const ProfileDropdown = (toggle) => {
+    const navigate = useNavigate();
+    const logout = () => {
+        localStorage.removeItem(import.meta.env.VITE_KEY_USERLOGIN);
+        return navigate('/auth?logout=true');
+    }
+
+
     return (
     <div className={`absolute w-56 h-100 top-12 bg-white right-28 rounded-md shadow-md border-[0.8px] border-gray-200  ${toggle.toggleDropdown.isHidden ? 'hidden': ''}  ${toggle.toggleDropdown.isDropProfileOpen ? `animate-slide-up opacity-100 ` : `animate-slide-down opacity-0 translate-y-14 `} `} id="profileDropdown">
         <ul className="font-montserrat text-gray-700">
@@ -21,7 +28,7 @@ const ProfileDropdown = (toggle) => {
                     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="currentColor" d="M12 12q-1.65 0-2.825-1.175T8 8t1.175-2.825T12 4t2.825 1.175T16 8t-1.175 2.825T12 12m-8 8v-2.8q0-.85.438-1.562T5.6 14.55q1.55-.775 3.15-1.162T12 13t3.25.388t3.15 1.162q.725.375 1.163 1.088T20 17.2V20z"/></svg>
                     <p className="ms-2">John Doe</p>
                 </NavLink>
-             <Link to={"/auth"}>
+             <Link onClick={logout}>
                 <li className="px-5 py-3 mb-1 flex items-center hover:bg-hover border-b-[1px] border-gray-100 text-red-600 hover:text-primary-text">
                    <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24"><path fill="currentColor" d="M12 22q-2.075 0-3.9-.788t-3.175-2.137T2.788 15.9T2 12q0-2.1.788-3.912t2.137-3.163l1.4 1.4q-1.1 1.1-1.712 2.55T4 12q0 3.35 2.325 5.675T12 20t5.675-2.325T20 12q0-1.675-.612-3.125t-1.713-2.55l1.4-1.4q1.35 1.35 2.138 3.163T22 12q0 2.075-.788 3.9t-2.137 3.175t-3.175 2.138T12 22m-1-9V2h2v11z"/></svg>
                     <p className="ms-2">Logout</p>

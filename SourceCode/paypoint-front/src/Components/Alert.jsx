@@ -74,11 +74,22 @@ const WarningAlertVerif = (props) => {
     )
 }
 
+const SuccessLogout = (props) => {
+    return (
+        <>
+            <div className={`${props.action == true ? "hidden" : ""} bg-green-500 w-full h-auto px-4 py-2 rounded-md text-white`}>
+                Berhasil Logout!
+            </div>
+        </>
+    )
+}
+
 export  {
     DangerAlert,
     SuccessAlert,
     WarningAlert,
     SuccessAlertVerif,
     DangerAlertVerif,
-    WarningAlertVerif
+    WarningAlertVerif,
+    SuccessLogout
 };

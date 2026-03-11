@@ -14,7 +14,6 @@ const Register = () => {
     const [isPassConfErr, setIsPassConfErr] = useState(false);
     const [isDangerAlertHidden, setIsDangerAlertHidden] = useState(true);
     const [isSuccAlertHidden, setIsSuccAlertHidden] = useState(true);
-    const [isWarnAlertHidden, setIsWarnAlertHidden] = useState(true);
     const [isProcessLogin, setIsProcessLogin] = useState(false);
     const [alertMsg, setAlertMsg] = useState("");
 
@@ -119,7 +118,6 @@ const Register = () => {
                     </div>
                     <DangerAlert action={{alertMsg, isDangerAlertHidden}} />
                     <SuccessAlert action={{alertMsg, isSuccAlertHidden}}/>
-                    <WarningAlert action={{alertMsg, isWarnAlertHidden}}/>
                     <form action="" method="post" className="flex flex-col gap-3">
                         <div className="flex flex-col gap-2 justify-start">
                             <label htmlFor="username">Username</label>

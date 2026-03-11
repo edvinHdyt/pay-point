@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Navigate, Outlet, useNavigate} from "react-router-dom";
+import { Navigate, Outlet} from "react-router-dom";
 import Navbar from "../Components/navbar";
 import Footer from "../Components/Footer";
 import Sidebar from "../Components/Sidebar";

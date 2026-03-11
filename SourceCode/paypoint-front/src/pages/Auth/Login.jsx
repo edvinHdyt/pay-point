@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { LoginCard, MainCard } from "../../Components/MainCard";
-import { Link, Navigate, useNavigate } from "react-router-dom";        
+import { Link, Navigate, useNavigate, useOutletContext } from "react-router-dom";        
 import axios from "axios";
-import { DangerAlert } from "../../Components/Alert";
+import { DangerAlert, SuccessAlert, SuccessLogout } from "../../Components/Alert";
 import Loading from "../../Components/Loading";
 
 const Login = () => {
     const navigate = useNavigate();
-
+    const outlineContext = useOutletContext();
     const [isPassVisible, setIsPassVisibel] = useState(false);
     const [isEmailErr, setIsEmailErr] = useState(false);
     const [isPassErr, setIsPassErr] = useState(false);
@@ -94,6 +94,7 @@ const Login = () => {
                         <h1 className="text-primary-text text-xl font-gibed">Welcome back!</h1>
                         <p className="text-md text-tersier-text">Pelase Login</p>
                         <DangerAlert action={{alertMsg, isDangerAlertHidden}} />
+                        <SuccessLogout action={outlineContext} />
                     </div>
                     <form action="" method="post" className="flex flex-col gap-3">
                         <div className="flex flex-col gap-2 justify-start">
