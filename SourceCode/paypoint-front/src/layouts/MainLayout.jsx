@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet, useNavigate} from "react-router-dom";
 import Navbar from "../Components/navbar";
 import Footer from "../Components/Footer";
 import Sidebar from "../Components/Sidebar";
@@ -93,14 +93,11 @@ const MainLayout = () => {
         setIsModalOpen(false);
     }
 
+    const userLogin = localStorage.getItem(import.meta.env.VITE_KEY_USERLOGIN);
 
-    // const [keyUserLogin, setKeyUserLogin] = useState("USER-LOGIN-KEY");
-    
-    // const userLogin = localStorage.getItem(keyUserLogin);
-
-    // if(userLogin == null){
-    //     return <Navigate to="/auth" replace/>
-    // }
+    if(userLogin == null){
+        return <Navigate to={"/auth"} replace/>
+    }
 
     return (
         <>
