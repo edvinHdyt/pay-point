@@ -41,7 +41,18 @@ const checkEmail = async (req, res, next) => {
     if (user.length == 0){
         next();
     } else {
-        res.status(409).json({msg: "Email already used!"});
+        res.status(200).json({msg: "Email sudah digunakan!", status: 409});
+    }
+}
+
+const checkUserExist = async(req,res, next) => {
+  const email = req.body.email;
+
+  const user = await User.find({email: email});
+    if (user.length > 0){
+        next();
+    } else {
+        res.status(200).json({msg: "Email tidak terdaftar!", status: 409});
     }
 }
 
@@ -53,8 +64,13 @@ app.post("/auth/register", checkEmail, (req, res) => {
     authenticationController.register(req, res);
 });
 
-app.post("/auth/verify/:token", (req, res) => {
-
+app.post("/auth/verify/resend-email", checkUserExist, (req, res) => {
+    authenticationController.resendVerifyEmail(req, res);
 });
+
+app.patch("/auth/verify/:token", (req, res) => {
+    authenticationController.verifyEmail(req, res);
+});
+
 
 export default app;

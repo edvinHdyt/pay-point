@@ -5,6 +5,7 @@ import doteenv from 'dotenv';
 import hbs from 'nodemailer-express-handlebars';
 import path from 'path';
 import jwt from 'jsonwebtoken';
+import { error } from "console";
 doteenv.config();
 
 class AuthenticationController {
@@ -14,8 +15,8 @@ class AuthenticationController {
             
             const user = await User.findOne({email: email});
             
-            if (user.length == 0){
-                throw new Error("Email or Password wrong!");
+            if (user == null){
+                throw new Error("Email atau Password salah!");
             }
 
             const userPass = user.password;
@@ -23,17 +24,17 @@ class AuthenticationController {
             const comparePass = await bcrypt.compare(password, userPass);
 
             if (!comparePass){
-                throw new Error("Password wrong!");
+                throw new Error("Password salah!");
             }
 
             if (user.email_verified_at == undefined){
-                throw new Error("Account is not verified!");
+                throw new Error("Akun belum terverifikasi, silahakan cek email anda untuk memverifikasi akun");
             }
 
-            res.status(200).json({msg: "Success Login"});
+            res.status(200).json({msg: "Berhasil Login", status: 200, id_user: user.id.toString()});
 
         }catch(error){
-            res.status(400).json({msg: error.message});
+            res.status(200).json({msg: error.message, status: 400});
         }
     }
 
@@ -59,9 +60,9 @@ class AuthenticationController {
             await this.sendEmail(email, name);
             user.save();
 
-            res.status(200).json({msg: 'Success save user', 'id': user._id.toString()});
+            res.status(200).json({msg: 'Sukses register, mohon cek email anda untuk verifikasi akun sebelum login!', status: 200});
         } catch (error) {
-            res.status(500).json({msg: "Failed to save user"});
+            res.status(200).json({msg: "Gagal untuk register, silahkan coba lagi!", status: 500});
         }
     }
 
@@ -90,7 +91,7 @@ class AuthenticationController {
                     email: email
                 },
                 process.env.PAYPOINT_SECRET_KEY,
-                {expiresIn: '1m'}
+                {expiresIn: '1h'}
             )
 
             await transporter.sendMail({
@@ -100,7 +101,7 @@ class AuthenticationController {
                 template: 'email',
                 context: {
                     name,
-                    link: `http:127.0.0.1:3000/verify/${token}`
+                    link: `${process.env.FRONTEND_URL}/auth/verification/${token}`
                 }
             });
         } catch (error) {
@@ -109,9 +110,61 @@ class AuthenticationController {
     }
 
     async verifyEmail(req, res){
+        const token = req.params.token;
+        let emailUser;
+        try {
+            const decodeToken = jwt.verify(token, process.env.PAYPOINT_SECRET_KEY);
+            emailUser = decodeToken.email;
+        } catch (error) {
+            return res.status(200).json({msg: "token expired", status: 400});
+        }
+
+        
+        try {
+            const user = await User.findOne({email: emailUser});
+            if (user.email_verified_at != null){
+                throw new Error("Akun sudah diverifikasi");
+            }
+        } catch (error) {
+            return res.status(200).json({msg: error.message, status: 409});
+        }
+   
+        try {
+            const date = new Date((new Date).toLocaleString("en-US", {
+                timeZone: "Asia/Jakarta"
+            }));
+
+
+            await User.updateOne({email: emailUser} , { $set: {email_verified_at: date}});
+            return res.status(200).json({msg: "Sukses verifikasi email, silahkan login", status: 200});
+        } catch (error) {
+            return res.status(200).json({msg: "Kesalahan server", status: 500});
+        }
 
     }
-}
 
+    async resendVerifyEmail(req, res) {
+        const email = req.body.email;
+        let name;
+        try {
+            const user = await User.findOne({email: email});
+            if (user.length == 0){
+                throw new Error("Email tidak terdaftar!");
+            }
+
+            name = user.name;
+        } catch (error) {
+            res.status(200).json({msg: error.message, status: 409});
+        }
+        
+        try{
+            this.sendEmail(email, name);
+
+            res.status(200).json({msg: "Email terkirim", status: 200});
+        }catch(error){
+            res.status(200).json({msg: "Gagal mengirim email, silahkan coba beberapa saat lagi", status: 500})
+        }
+    }
+}
 
 export default AuthenticationController;
