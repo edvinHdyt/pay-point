@@ -27,11 +27,13 @@ class AuthenticationController {
                 throw new Error("Password salah!");
             }
 
+
             if (user.email_verified_at == undefined){
-                throw new Error("Akun belum terverifikasi, silahakan cek email anda untuk memverifikasi akun");
+                this.sendEmail(user.email, user.name);
+                throw new Error("Akun belum terverifiksi, silahkan cek email untuk verifikasi akun!");
             }
 
-            res.status(200).json({msg: "Berhasil Login", status: 200, id_user: user.id.toString()});
+            res.status(200).json({msg: "Success Login", status: 200, 'id_user': user._id.toString()});
 
         }catch(error){
             res.status(200).json({msg: error.message, status: 400});
@@ -60,7 +62,7 @@ class AuthenticationController {
             await this.sendEmail(email, name);
             user.save();
 
-            res.status(200).json({msg: 'Sukses register, mohon cek email anda untuk verifikasi akun sebelum login!', status: 200});
+            res.status(200).json({msg: 'Success save user', 'id_user': user._id.toString()});
         } catch (error) {
             res.status(200).json({msg: "Gagal untuk register, silahkan coba lagi!", status: 500});
         }

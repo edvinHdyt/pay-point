@@ -1,11 +1,12 @@
-import { useState } from "react";
-import { Navigate, Outlet } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Navigate, Outlet} from "react-router-dom";
 import Navbar from "../Components/navbar";
 import Footer from "../Components/Footer";
 import Sidebar from "../Components/Sidebar";
 import { ModalCart, ModalAlertMsg, ModalConfEmail,
     ModalChangePass
  } from "../Components/Modals";
+import axios from "axios";
 
 const Breadcrumb = () => {
     return (
@@ -43,6 +44,7 @@ const MainLayout = () => {
     const [isModalAlertOpen, setIsModalAlertOpen] = useState(false);
     const [isModalConfEmaiLOpen, setIsModalConfEmailOpen] = useState(false);
     const [isModalChangePassOpen, setIsModalChangePassOpen] = useState(false);
+    const [username, setUsername] = useState("");
     
     const handlingCartLength = () => {
         setCartLength(cartLength + 1);
@@ -93,13 +95,27 @@ const MainLayout = () => {
         setIsModalOpen(false);
     }
 
+    const userLogin = localStorage.getItem(import.meta.env.VITE_KEY_USERLOGIN) == null ? null :  JSON.parse(localStorage.getItem(import.meta.env.VITE_KEY_USERLOGIN));
+    const apiuri = import.meta.env.VITE_API_URL;
 
-    const [keyUserLogin, setKeyUserLogin] = useState("USER-LOGIN-KEY");
-    
-    const userLogin = localStorage.getItem(keyUserLogin);
+    useEffect(() => {
+        axios.post(`${apiuri}user/get`, {userId: userLogin.id_user})
+        .then((res) => {
+            const resData = res.data;
+            console.log(resData);
+            if (resData.status == 200){
+                setUsername(resData.user.name);
+            }else {
+                throw new Error(resData.msg);
+            }
+        }).catch((err) => {
+            console.log(err.message);
+        })
+
+    }, [apiuri, userLogin]);
 
     if(userLogin == null){
-        return <Navigate to="/auth" replace/>
+        return <Navigate to={"/auth"} replace/>
     }
 
     return (
@@ -110,14 +126,15 @@ const MainLayout = () => {
             <div className={`lg:flex relative z-30 ${isModalOpen ? 'blur-sm' : ""}`}>
                 <Sidebar handlerSidebar={{isSidebarOpen, toggleSidebar, isRefresh}}/>
                 <div className="flex flex-col w-full">
-                    <Navbar toggleSidebar={toggleSidebar} openModalCart={openModalCart} cartLength={cartLength}/>
+                    <Navbar toggleSidebar={toggleSidebar} openModalCart={openModalCart} cartLength={cartLength} username={username}/>
                     <main className="px-20 min-h-[79vh]">
                         {/* <Breadcrumb /> */}
-                        <Outlet context={{handlingCartLength, openAlertModal, openConfEmailModal}}/>
+                        <Outlet context={{handlingCartLength, openAlertModal, openConfEmailModal, username}}/>
                     </main>
                 <Footer />
                 </div>
             </div>
+
             <ModalCart isModalCartOpen={isModalCartOpen} closeModalCart={closeModalCart} />
             <ModalAlertMsg alertMsg={alertMsg} isModalAlertOpen={isModalAlertOpen} closeAlertModal={closeAlertModal}/>
             <ModalConfEmail isModalConfEmaiLOpen={isModalConfEmaiLOpen} funcModal={{closeConfEmailModal, openChangePassModal}}/>

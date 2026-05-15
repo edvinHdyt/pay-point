@@ -1,8 +1,10 @@
 import express from 'express';
 import AuthenticationController from '../controller/AuthenticationController.js';
+import UserController from '../controller/UserController.js';
 import User from '../model/User.js';
 import cors from 'cors';
 const authenticationController = new AuthenticationController();
+const userController = new UserController();
 
 const app = express();
 app.use(express.json());
@@ -29,10 +31,9 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-app.get("/", (req, res) => {
-    console.log("hello world")
-    res.send("hello world");
-});
+app.post("/user/get", (req, res) => {
+    userController.getUser(req, res);
+})
 
 const checkEmail = async (req, res, next) => {
     const email = req.body.email;

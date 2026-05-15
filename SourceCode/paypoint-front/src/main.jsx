@@ -14,6 +14,7 @@ import LoginLayout from './layouts/LoginLayout.jsx'
 import Login from './pages/Auth/Login.jsx'
 import Register from './pages/Auth/Register.jsx'
 import ForgotPassword from './pages/Auth/ForgotPassword.jsx'
+import Verification from './pages/Auth/Verification.jsx'
 
 const router = createBrowserRouter ([
  {
@@ -73,6 +74,10 @@ const router = createBrowserRouter ([
       {
         path: 'forgot-password',
         element: <ForgotPassword/>
+      },
+      {
+        path: 'verification/:token',
+        element: <Verification/>
       }
     ]
   }

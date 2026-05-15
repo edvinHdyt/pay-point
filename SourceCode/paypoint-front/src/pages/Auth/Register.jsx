@@ -3,6 +3,7 @@ import { LoginCard, MainCard } from "../../Components/MainCard";
 import { Link } from "react-router-dom";
 import {DangerAlert, SuccessAlert, WarningAlert} from "../../Components/Alert";
 import axios from "axios";
+import Loading from "../../Components/Loading";
 
 const Register = () => {
     const [isPassVisible, setIsPassVisibel] = useState(false);
@@ -13,9 +14,10 @@ const Register = () => {
     const [isPassConfErr, setIsPassConfErr] = useState(false);
     const [isDangerAlertHidden, setIsDangerAlertHidden] = useState(true);
     const [isSuccAlertHidden, setIsSuccAlertHidden] = useState(true);
-    const [isWarnAlertHidden, setIsWarnAlertHidden] = useState(true);
+    const [isProcessLogin, setIsProcessLogin] = useState(false);
     const [alertMsg, setAlertMsg] = useState("");
 
+    let classLoading = 'w-7 h-7';
 
     const handlePassVisible = () => {
         setIsPassVisibel(true);
@@ -38,58 +40,69 @@ const Register = () => {
     }
 
     const registerAction = async () => {
+        setIsProcessLogin(true);
         const username = document.getElementById("username").value;
         const email = document.getElementById("email").value;
         const pass = document.getElementById("password").value;
         const confPass = document.getElementById("confPass").value;
         const confPassErrMsg = document.getElementById("confPassMsg");
 
-        if (username == ""){
-            setIsUsernameErr(true);
-        }else {
-            setIsUsernameErr(false);
-        }
-        if(email == ""){
-            setIsEmailErr(true);
-        }else {
-            setIsEmailErr(false);
-        }
         
-        if(pass == ""){
-            setIsPassErr(true);
-        }else {
-            setIsPassErr(false);
-        }
-        
-        if(confPass == ""){
-            setIsPassConfErr(true);
-        }else {
-            setIsPassConfErr(false);
-        }
+        if (username == "" || email == "" || pass == "" || confPass == ""){
+            
+            if (username == ""){
+                setIsUsernameErr(true);
+            }else {
+                setIsUsernameErr(false);
+            }
+            if(email == ""){
+                setIsEmailErr(true);
+            }else {
+                setIsEmailErr(false);
+            }
+            
+            if(pass == ""){
+                setIsPassErr(true);
+            }else {
+                setIsPassErr(false);
+            }
+            
+            if(confPass == ""){
+                setIsPassConfErr(true);
+            }else {
+                setIsPassConfErr(false);
+            }
+        }else{
 
-        if (pass != confPass){
-            confPassErrMsg.innerText = "Password dan Confirm password harus sama!";
-            setIsPassConfErr(true);
-        } else {
-            try {
-                const data = {
-                    name: username,
-                    email,
-                    password: pass
-                };
-        
+            if (pass != confPass){
+                confPassErrMsg.innerText = "Password dan Confirm password harus sama!";
+                setIsPassConfErr(true);
+            } else {
                 const apiUrl = import.meta.env.VITE_API_URL;
-                const res = await axios.post(`${apiUrl}auth/register`, data, {headers : {'Content-Type': 'application/json'}});
-                setAlertMsg(res.data);
-                console.log(res)
-                setIsSuccAlertHidden(false);
-            } catch (error) {
-                setAlertMsg(error);
-                console.log(error)
-                setIsDangerAlertHidden(false);
+                try {
+                    const data = {
+                        name: username,
+                        email,
+                        password: pass
+                    };
+            
+                    const res = await axios.post(`${apiUrl}auth/register`, data, {headers : {'Content-Type': 'application/json'}});
+                    const resData = res.data;
+                    if (resData.status == 200){
+                        setAlertMsg(res.data.msg);
+                        setIsSuccAlertHidden(false);
+                    }else {
+                        throw new Error(resData.msg);
+                    }
+    
+                } catch (error) {
+                    setAlertMsg(error.message);
+                    setIsDangerAlertHidden(false);
+                }
             }
         }
 
+        setIsProcessLogin(false);
     }
 
     return (
@@ -105,7 +118,6 @@ const Register = () => {
                     </div>
                     <DangerAlert action={{alertMsg, isDangerAlertHidden}} />
                     <SuccessAlert action={{alertMsg, isSuccAlertHidden}}/>
-                    <WarningAlert action={{alertMsg, isWarnAlertHidden}}/>
                     <form action="" method="post" className="flex flex-col gap-3">
                         <div className="flex flex-col gap-2 justify-start">
                             <label htmlFor="username">Username</label>
@@ -141,14 +153,14 @@ const Register = () => {
                         </div>
                         <div className="flex justify-center items-center gap-3">
                             <Link>
-                                <button type="button" className="flex bg-blue-500 text-white rounded-md p-2 items-center justify-center shadow-sm active:translate-y-[2px] transition duration-75" onClick={registerAction}>
-                                    Register
-                                </button> 
+                                <button type="button" className={`flex ${isProcessLogin == false ? "bg-blue-500 active:translate-y-[2px] transition duration-75" : "bg-gray-400"}  text-white rounded-md p-2 items-center justify-center shadow-sm `} onClick={registerAction} disabled={isProcessLogin}>
+                                    {isProcessLogin == false ? "Register" : <Loading classLoading={classLoading}/>}
+                                </button>
                             </Link>
                             <Link to={"/auth"}>
-                                <button type="button" className="flex bg-gray-500 text-white rounded-md p-2 items-center justify-center shadow-sm active:translate-y-[2px] transition duration-75">
+                                <button type="button" className="flex bg-gray-500 text-white rounded-md p-2 items-center justify-center shadow-sm active:translate-y-[2px] transition duration-75" disabled={isProcessLogin}>
                                     Login
-                                </button>
+                                </button> 
                             </Link>
                         </div>
                     </form>
