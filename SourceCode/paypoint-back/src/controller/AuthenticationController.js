@@ -23,17 +23,19 @@ class AuthenticationController {
             const comparePass = await bcrypt.compare(password, userPass);
 
             if (!comparePass){
-                throw new Error("Password wrong!");
+                throw new Error("Password salah!");
             }
+
 
             if (user.email_verified_at == undefined){
-                throw new Error("Account is not verified!");
+                this.sendEmail(user.email, user.name);
+                throw new Error("Akun belum terverifiksi, silahkan cek email untuk verifikasi akun!");
             }
 
-            res.status(200).json({msg: "Success Login"});
+            res.status(200).json({msg: "Success Login", status: 200, 'id_user': user._id.toString()});
 
         }catch(error){
-            res.status(400).json({msg: error.message});
+            res.status(200).json({msg: error.message, status: 400});
         }
     }
 
@@ -59,7 +61,7 @@ class AuthenticationController {
             await this.sendEmail(email, name);
             user.save();
 
-            res.status(200).json({msg: 'Success save user', 'id': user._id.toString()});
+            res.status(200).json({msg: 'Success save user', 'id_user': user._id.toString()});
         } catch (error) {
             res.status(500).json({msg: "Failed to save user"});
         }

@@ -17,7 +17,7 @@ const User = mongoose.model("User", {
         max: 255,
         required: true
     },
-    password_verified: {
+    email_verified_at: {
         type: Date
     },
     profile_pict: {
