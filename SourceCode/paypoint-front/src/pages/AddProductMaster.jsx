@@ -38,6 +38,15 @@ const AddProductMaster = () => {
                             <input type="number" name="product-name" id="price" className="w-full py-2 px-3 border-[0.8px] border-t-gray-400 border-r-gray-400 border-b-gray-400 rounded-l-none shadow-sm outline-primary rounded-r-lg " placeholder="Price"/>
                         </div>
                     </div>
+                    <div className="flex flex-col sm:flex-row sm:items-top sm:gap-10 mb-3 font-montserrat">
+                        <div className="w-32">
+                            <label htmlFor="product_desc">Description</label>
+                        </div>
+                        <div className="flex flex-col gap-2 w-full items-end">
+                            <textarea name="" id="" className="w-full py-2 px-4 border-[0.8px] border-gray-400 rounded-md shadow-sm outline-primary max-h-32 min-h-10" placeholder="Description"></textarea>
+                            <span className="text-sm text-tersier-text ">0/100</span>
+                        </div>
+                    </div>
                     <div className="flex flex-col sm:flex-row sm:items-center sm:gap-10 mb-3 font-montserrat">
                         <div className="w-30">
                             <label htmlFor="productImage">Product Image</label>
