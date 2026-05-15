@@ -77,6 +77,7 @@ const Login = () => {
             }
             
         } catch (error) {
+            setIsProcessLogin(false);
             setIsDangerAlertHidden(false);
             setAlertMsg(error.message);
         }

@@ -26,7 +26,7 @@ const ProfileDropdown = (toggle) => {
         <ul className="font-montserrat text-gray-700">
                 <NavLink className={({isActive}) => isActive ? "px-5 py-3 mb-1 flex items-center bg-hover border-b-[1px] border-gray-100" : "px-5 py-3 mb-1 flex items-center hover:bg-hover border-b-[1px] border-gray-100"}  to={'profile'}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="currentColor" d="M12 12q-1.65 0-2.825-1.175T8 8t1.175-2.825T12 4t2.825 1.175T16 8t-1.175 2.825T12 12m-8 8v-2.8q0-.85.438-1.562T5.6 14.55q1.55-.775 3.15-1.162T12 13t3.25.388t3.15 1.162q.725.375 1.163 1.088T20 17.2V20z"/></svg>
-                    <p className="ms-2">John Doe</p>
+                    <p className="ms-2">{toggle.username}</p>
                 </NavLink>
              <Link onClick={logout}>
                 <li className="px-5 py-3 mb-1 flex items-center hover:bg-hover border-b-[1px] border-gray-100 text-red-600 hover:text-primary-text">
@@ -68,7 +68,7 @@ const Navbar = (propsNav) => {
     
     return (
         <header className="w-full h-14 px-20 py-3 flex items-center shadow-md sticky top-0 bg-slate-50 z-40 mb-5">
-            <ProfileDropdown toggleDropdown={{isDropProfileOpen, isHidden}}/>
+            <ProfileDropdown toggleDropdown={{isDropProfileOpen, isHidden}} username={propsNav.username}/>
             <nav className="flex justify-between items-center font-montserrat w-full">
                 <div className="flex lg:hidden">
                     <Link to="/">
