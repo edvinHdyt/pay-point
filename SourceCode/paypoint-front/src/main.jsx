@@ -16,6 +16,7 @@ import Register from './pages/Auth/Register.jsx'
 import ForgotPassword from './pages/Auth/ForgotPassword.jsx'
 import Verification from './pages/Auth/Verification.jsx'
 import AddProductMaster from './pages/AddProductMaster.jsx'
+import SalesReport from './pages/SalesReport.jsx'
 
 const router = createBrowserRouter ([
  {
@@ -57,6 +58,10 @@ const router = createBrowserRouter ([
       {
         path: 'profile',
         element: <Profile />
+      },
+      {
+        path: 'sales-report',
+        element: <SalesReport />
       }
     ]
   },
