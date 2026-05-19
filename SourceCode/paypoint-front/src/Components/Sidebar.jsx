@@ -53,6 +53,22 @@ const Sidebar = (propsSidebar) => {
                     <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 2048 2048"><path fill="currentColor" d="m1344 2l704 352v785l-128-64V497l-512 256v258l-128 64V753L768 497v227l-128-64V354zm0 640l177-89l-463-265l-211 106zm315-157l182-91l-497-249l-149 75zm-507 654l-128 64v-1l-384 192v455l384-193v144l-448 224L0 1735v-676l576-288l576 288zm-640 710v-455l-384-192v454zm64-566l369-184l-369-185l-369 185zm576-1l448-224l448 224v527l-448 224l-448-224zm384 576v-305l-256-128v305zm384-128v-305l-256 128v305zm-320-288l241-121l-241-120l-241 120z"/></svg>
                     <span className="ms-2 text-secondary-text">Product Master</span>
                 </NavLink>
+                <NavLink to={"sales-report"} className={({ isActive }) =>isActive ? "px-4 py-3 border-0 rounded-md flex item-center mb-2 hover:bg-hover bg-primary" : "px-4 py-3 border-0 rounded-md flex item-center mb-2 hover:bg-hover"}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 48 48">
+                        <path d="M0 0h48v48H0z" fill="none" />
+                        <defs>
+                            <mask id="SVGO2OHRbQe">
+                                <g fill="none" stroke-linejoin="round" stroke-width="4">
+                                    <path fill="#fff" stroke="#fff" d="M41 14L24 4L7 14v20l17 10l17-10z" />
+                                    <path stroke="#000" stroke-linecap="round" d="M24 22v8m8-12v12m-16-4v4" />
+                                </g>
+                            </mask>
+                        </defs>
+                        <path fill="currentColor" d="M0 0h48v48H0z" mask="url(#SVGO2OHRbQe)" />
+                    </svg>
+
+                    <span className="ms-2 text-secondary-text">Sales Report</span>
+                </NavLink>
             </ul>
         </div>        
     )

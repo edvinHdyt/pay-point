@@ -15,6 +15,8 @@ import Login from './pages/Auth/Login.jsx'
 import Register from './pages/Auth/Register.jsx'
 import ForgotPassword from './pages/Auth/ForgotPassword.jsx'
 import Verification from './pages/Auth/Verification.jsx'
+import AddProductMaster from './pages/AddProductMaster.jsx'
+import SalesReport from './pages/SalesReport.jsx'
 
 const router = createBrowserRouter ([
  {
@@ -34,7 +36,7 @@ const router = createBrowserRouter ([
         element: <Category />,
       },
       {
-        path: "category/add-category",
+        path: "category/add",
         element: <AddCategory />
       },
       {
@@ -46,12 +48,20 @@ const router = createBrowserRouter ([
         element: <ProductMaster />
       },
       {
+        path: 'product-master/add',
+        element: <AddProductMaster />
+      },
+      {
         path: 'product/payment',
         element: <Payment />
       },
       {
         path: 'profile',
         element: <Profile />
+      },
+      {
+        path: 'sales-report',
+        element: <SalesReport />
       }
     ]
   },
