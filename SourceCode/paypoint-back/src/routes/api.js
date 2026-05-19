@@ -1,11 +1,12 @@
 import express from 'express';
 import AuthenticationController from '../controller/AuthenticationController.js';
 import UserController from '../controller/UserController.js';
+import CategoryController from '../controller/CategoryController.js';
 import User from '../model/User.js';
 import cors from 'cors';
 const authenticationController = new AuthenticationController();
 const userController = new UserController();
-
+const categoryController = new CategoryController();
 const app = express();
 app.use(express.json());
 
@@ -74,4 +75,19 @@ app.patch("/auth/verify/:token", (req, res) => {
 });
 
 
+app.get("/category/get", checkUserExist, (req, res) => {
+    categoryController.getCategory(req, res);
+}) 
+
+app.post("/category/add", checkUserExist, (req, res) => {
+    categoryController.addCategory(req, res);
+});
+
+app.delete("/category/delete/:id", checkUserExist, (req, res) => {
+    categoryController.deleteCategory(req, res);
+});
+
+app.patch("/category/update/:id", checkUserExist, (req, res) => {
+    categoryController.updateCategory(req, res);
+})
 export default app;
