@@ -4,7 +4,7 @@ import Navbar from "../Components/navbar";
 import Footer from "../Components/Footer";
 import Sidebar from "../Components/Sidebar";
 import { ModalCart, ModalAlertMsg, ModalConfEmail,
-    ModalChangePass
+    ModalChangePass, ModalConfDelete
  } from "../Components/Modals";
 import axios from "axios";
 
@@ -42,9 +42,13 @@ const MainLayout = () => {
     const [cartLength, setCartLength] = useState(0);
     const [alertMsg, setAlertMsg] = useState("");
     const [isModalAlertOpen, setIsModalAlertOpen] = useState(false);
+    const [typeAlertModal, setTypeAlertModal] = useState(0);
     const [isModalConfEmaiLOpen, setIsModalConfEmailOpen] = useState(false);
     const [isModalChangePassOpen, setIsModalChangePassOpen] = useState(false);
+    const [isModalConfDeleteOpen, setIsModalConfDeleteOpen] = useState(false);
+    // const [isDeleteData, setIsDeleteData] = useState(false);
     const [username, setUsername] = useState("");
+    const [fDeleteComp, setFDeleteComp] = useState();
     
     const handlingCartLength = () => {
         setCartLength(cartLength + 1);
@@ -65,9 +69,10 @@ const MainLayout = () => {
         setIsModalOpen(true);
     }
 
-    const openAlertModal = (msg) => {
+    const openAlertModal = (msg, type) => {
         setAlertMsg(msg);
         setIsModalAlertOpen(true);
+        setTypeAlertModal(type)
     }
 
     const closeAlertModal = () => {
@@ -95,6 +100,21 @@ const MainLayout = () => {
         setIsModalOpen(false);
     }
 
+
+    const openModalConfDelete = (msg, deleteCompAction) => {
+        setAlertMsg(msg);
+        setIsModalConfDeleteOpen(true);
+        setIsModalOpen(true);
+        setFDeleteComp(() => deleteCompAction);
+    }
+
+    const closeModalConfDelete = () => {
+        setAlertMsg();
+        setIsModalConfDeleteOpen(false);
+        setIsModalOpen(false);
+    }
+
+
     const userLogin = localStorage.getItem(import.meta.env.VITE_KEY_USERLOGIN) == null ? null :  JSON.parse(localStorage.getItem(import.meta.env.VITE_KEY_USERLOGIN));
     const apiuri = import.meta.env.VITE_API_URL;
 
@@ -102,14 +122,13 @@ const MainLayout = () => {
         axios.post(`${apiuri}user/get`, {userId: userLogin.id_user})
         .then((res) => {
             const resData = res.data;
-            console.log(resData);
+            // console.log(resData);
             if (resData.status == 200){
                 setUsername(resData.user.name);
             }else {
                 throw new Error(resData.msg);
             }
-        }).catch((err) => {
-            console.log(err.message);
+        }).catch(() => {
         })
 
     }, [apiuri, userLogin]);
@@ -117,6 +136,15 @@ const MainLayout = () => {
     if(userLogin == null){
         return <Navigate to={"/auth"} replace/>
     }
+
+    const dataContext = {
+        handlingCartLength,
+        openAlertModal,
+        openConfEmailModal,
+        openModalConfDelete,
+        closeModalConfDelete,
+        username
+    };
 
     return (
         <>
@@ -129,20 +157,31 @@ const MainLayout = () => {
                     <Navbar toggleSidebar={toggleSidebar} openModalCart={openModalCart} cartLength={cartLength} username={username}/>
                     <main className="px-20 min-h-[79vh]">
                         {/* <Breadcrumb /> */}
-                        <Outlet context={{handlingCartLength, openAlertModal, openConfEmailModal, username}}/>
+                        <Outlet context={dataContext}/>
                     </main>
                 <Footer />
                 </div>
             </div>
-
+            
             <ModalCart isModalCartOpen={isModalCartOpen} closeModalCart={closeModalCart} />
-            <ModalAlertMsg alertMsg={alertMsg} isModalAlertOpen={isModalAlertOpen} closeAlertModal={closeAlertModal}/>
+            <ModalAlertMsg sendProps={{
+                alertMsg,
+                isModalAlertOpen,
+                closeAlertModal,
+                typeAlertModal
+            }}/>
             <ModalConfEmail isModalConfEmaiLOpen={isModalConfEmaiLOpen} funcModal={{closeConfEmailModal, openChangePassModal}}/>
             <ModalChangePass isModalChangePassOpen={isModalChangePassOpen} closeChangePassModal={closeChangePassModal}/>
+            <ModalConfDelete sendProps={{
+                alertMsg,
+                isModalConfDeleteOpen,
+                closeModalConfDelete,
+                fDeleteComp
+            }} />
         </>
         
     )
 }
 
 
-export default MainLayout;
+export default MainLayout; 

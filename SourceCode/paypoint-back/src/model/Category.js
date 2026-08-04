@@ -7,7 +7,7 @@ const Category = mongoose.model("Categories", {
         required: true
     },
     created_at: {
-        type: date,
+        type: Date,
         required: true
     },
     modified_by: {

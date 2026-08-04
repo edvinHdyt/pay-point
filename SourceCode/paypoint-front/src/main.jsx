@@ -40,6 +40,10 @@ const router = createBrowserRouter ([
         element: <AddCategory />
       },
       {
+        path: "category/edit/:id",
+        element: <AddCategory />
+      },
+      {
         path: 'product',
         element: <Product />
       },

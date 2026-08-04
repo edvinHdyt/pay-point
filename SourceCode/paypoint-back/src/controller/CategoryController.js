@@ -1,11 +1,13 @@
-import Category from "../model/Category";
-import User from "../model/User";
+import { response } from "express";
+import Category from "../model/Category.js"
+import User from "../model/User.js";
 
 
 class CategoryController {
    async addCategory(req, res){
+
       try {
-         const {category, id_user} = req.body;
+         const {categoryBody, id_user} = req.body;
          const user = await User.findById(id_user);
 
          const date = new Date((new Date).toLocaleString("en-US", {
@@ -18,14 +20,14 @@ class CategoryController {
          }
 
          const category = new Category({
-            category: category,
+            category: categoryBody,
             modified_by: user.name,
             created_at: date
          });
 
         await category.save();
 
-        return res.status(200).json({msg: "Category berhasil disimpan!"})
+        return res.status(200).json({msg: "Category berhasil disimpan!", status:200})
          
       } catch (error) {
          let err = error.message != undefined ? error.message : "Internal server error";
@@ -36,9 +38,9 @@ class CategoryController {
    }
    async deleteCategory(req, res){
       try {
-         const {id_category} = req.body;
+         const {id} = req.params;
          
-         await Category.findByIdAndDelete(id_category);
+         await Category.findByIdAndDelete(id);  
          return res.status(200).json({msg: "Delete berhasil!", status: 200});
       } catch (error) {
          let err = error.message != undefined ? error.message : "Internal server error";
@@ -49,33 +51,49 @@ class CategoryController {
 
    async getCategory(req, res){
       try {
-         const category = await Category.find();
+         const ct = await Category.find();
+         const categories = ct.map(({_id, category}) => ({_id, category}))
+         
 
-         return res.status(200).json(category);
+         return res.status(200).json({categories, status: 200});
       } catch (error) {
          return res.status(200).json({msg: "Internal server error", status: 500})
       }
    }
 
+   async getOneCategory(req, res){
+      try{
+         const {idCategory} = req.query;
+         const category = await Category.findById(idCategory)
+
+         return res.status(200).json({category: category.category, status: 200});
+      }catch(error){
+         return res.status(200).json({msg: error, status: 500});
+      }
+   }
+
    async updateCategory(req, res){
       try {
-         const {id_category, category, id_user} = req.body;
+         const {idCategory, category, id_user} = req.body;
+
          const user = await User.findById(id_user);
 
          if (!user){
             throw new Error('User tidak ketemu');
-         }
+         }  
 
 
-         await Category.updateOne(id_category, {category: category, modified_by: user.name});
+         await Category.findByIdAndUpdate(idCategory, {category: category, modified_by: user.name});
 
          return res.status(200).json({msg: "Update berhasil", status: 200});
       } catch (error) {
          let err = error.message != undefined ? error.message : "Internal server error";
-         status = error.message != undefined ? 409 : 500;
+         const status = error.message != undefined ? 409 : 500;
+         console.log(error)
          return res.status(200).json({msg: err, status})
       }
    }
+
 }
 
 export default CategoryController;

@@ -62,7 +62,7 @@ class AuthenticationController {
             await this.sendEmail(email, name);
             user.save();
 
-            res.status(200).json({msg: 'Success save user', 'id_user': user._id.toString()});
+            res.status(200).json({msg: 'Success save user', 'id_user': user._id.toString(), status: 200});
         } catch (error) {
             res.status(200).json({msg: "Gagal untuk register, silahkan coba lagi!", status: 500});
         }
@@ -72,6 +72,9 @@ class AuthenticationController {
         try {
             const transporter = nodemailer.createTransport({
                 service:'gmail',
+                host: 'smpt.gmail.com',
+                port: 587,
+                secure: false,
                 auth:{
                     user: process.env.EMAIL_USER,
                     pass: process.env.EMAIL_PASS
@@ -107,6 +110,7 @@ class AuthenticationController {
                 }
             });
         } catch (error) {
+            console.log(error)
             throw new Error("Failed to send email");
         }
     }

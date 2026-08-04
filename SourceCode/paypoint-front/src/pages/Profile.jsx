@@ -35,7 +35,6 @@ const Profile = () => {
         })
     }
 
-    console.log(outlineContext);
     return (
         <>
             <TitlePage title={"Profile"}/>

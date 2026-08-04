@@ -58,6 +58,16 @@ const checkUserExist = async(req,res, next) => {
     }
 }
 
+const checkUserExistWithGet = async(req,res, next) => {
+    const email = req.query.email;
+    const user = await User.find({email: email});
+        if (user.length > 0){
+            next();
+        } else {
+            res.status(200).json({msg: "Email tidak terdaftar!", status: 409});
+        }
+}
+
 app.post("/auth/login", (req, res) => {
     authenticationController.login(req, res);
 })
@@ -75,15 +85,19 @@ app.patch("/auth/verify/:token", (req, res) => {
 });
 
 
-app.get("/category/get", checkUserExist, (req, res) => {
+app.get("/category/get", checkUserExistWithGet, (req, res) => {
     categoryController.getCategory(req, res);
 }) 
+
+app.get("/category/get/one", checkUserExistWithGet, (req, res) => {
+    categoryController.getOneCategory(req,res);
+});
 
 app.post("/category/add", checkUserExist, (req, res) => {
     categoryController.addCategory(req, res);
 });
 
-app.delete("/category/delete/:id", checkUserExist, (req, res) => {
+app.delete("/category/delete/:id", checkUserExistWithGet, (req, res) => {
     categoryController.deleteCategory(req, res);
 });
 

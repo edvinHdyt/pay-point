@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom"
 
 const BtnPrimary = (props) => {
     return (
@@ -24,18 +25,24 @@ const BtnTersier = (props) => {
 }
 
 
-const BtnEdit = () => {
+const BtnEdit = (props) => {
+    let navigate = useNavigate();
+
     return (
-        <button className='bg-primary p-1 px-2 rounded-md mr-2 shadow-sm active:translate-y-[2px] transition duration-75'>
+        <button className='bg-primary p-1 px-2 rounded-md mr-2 shadow-sm active:translate-y-[2px] transition duration-75' id={props.id} type="button" onClick={() => navigate(`edit/${props.action.id}`)}>
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" strokeLinecap="round" stroke-linejoin="round" strokeWidth="2"><path d="M7 7H6a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2v-1"/><path d="M20.385 6.585a2.1 2.1 0 0 0-2.97-2.97L9 12v3h3zM16 5l3 3"/></g></svg>
         </button>
     )
 }
 
-const BtnRemove = () => {
+const BtnRemove = (props) => {
+    function toggleRemoveElm(){
+        props.action.removeElm(props.action.id);
+    }
+
     return (
-        <button className='bg-red-500 p-1 px-2 rounded-md mr-2 text-white shadow-sm active:translate-y-[2px] transition duration-75'>
-           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M7 21q-.825 0-1.412-.587T5 19V6H4V4h5V3h6v1h5v2h-1v13q0 .825-.587 1.413T17 21zm2-4h2V8H9zm4 0h2V8h-2z"/></svg>
+        <button className='bg-red-500 p-1 px-2 rounded-md mr-2 text-white shadow-sm active:translate-y-[2px] transition duration-75' onClick={toggleRemoveElm} type="button">
+           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M7 21q-.825 0-1.412-.587T5 19V6H4V4h5V3h6v1h5v2h-1v13q0 .825-.587 1.413T17 21zm2-4h2V8H9zm4 0h2V8h-2z" onClick={toggleRemoveElm}/></svg>
         </button>
     )
 }
