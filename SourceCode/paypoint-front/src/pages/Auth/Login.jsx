@@ -69,7 +69,10 @@ const Login = () => {
             setIsProcessLogin(false);
 
             if (resData.status == 200){
-                const data = {id_user: resData.id_user};
+                const data = {
+                    id_user: resData.id_user,
+                    email: emailInpt
+                };
                 localStorage.setItem(import.meta.env.VITE_KEY_USERLOGIN, JSON.stringify(data));
                 return navigate('/');
             } else {

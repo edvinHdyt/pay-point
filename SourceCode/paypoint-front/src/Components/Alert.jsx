@@ -11,6 +11,7 @@ const DangerAlert = (props) => {
 }
 
 const SuccessAlert = (props) => {
+    console.log(props)
     return (
         <>
             <div className={`${props.action.isSuccAlertHidden == true ? "hidden" : ""} bg-green-500 w-full h-auto px-4 py-2 rounded-md text-white`}>

@@ -126,20 +126,46 @@ const ModalCart = (props) => {
 
 const ModalAlertMsg = (props) => {
     useEffect(() => {
-        if (props.isModalAlertOpen){
-            setTimeout(() => {
-                props.closeAlertModal();
+        let timerId;
+
+        if (props.sendProps.isModalAlertOpen){
+            timerId = setTimeout(() => {
+                props.sendProps.closeAlertModal();
             }, 2000);
         }
-    }, [props.isModalAlertOpen]);
+
+        return(() => {
+            clearTimeout(timerId);
+        })
+    }, [
+        props.sendProps
+    ]);
+
+    let colorAlert;
+    let textAlert;
+
+    switch (props.sendProps.typeAlertModal) {
+        case 0:
+            colorAlert = "bg-red-500";
+            textAlert = "text-white";
+            break;
+        case 2:
+            colorAlert = "bg-yellow-500";
+            textAlert = "text-black";
+            break
+        default:
+            colorAlert = "bg-green-500";
+            textAlert = "text-white";
+            break;
+    }
 
     return (
-        <div className={`w-auto p-3 bg-green-500 fixed bottom-2 right-5 z-50 shadow-md rounded-md border-[0.8px] border-gray-300 text-white justify-between item-center gap-3 ${props.isModalAlertOpen ? "flex animate-modal-show" : "hidden"}`}>
+        <div className={`w-auto p-3 ${colorAlert} fixed bottom-2 right-5 z-50 shadow-md rounded-md border-[0.8px] border-gray-300 ${textAlert} justify-between item-center gap-3 ${props.sendProps.isModalAlertOpen ? "flex animate-modal-show" : "hidden"}`}>
             <p className="flex gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M17.15 9.6L10 16.75l-3.2-3.2l.7-.71l2.5 2.5l6.44-6.45zM11.5 3c5.25 0 9.5 4.25 9.5 9.5S16.75 22 11.5 22S2 17.75 2 12.5S6.25 3 11.5 3m0 1C6.81 4 3 7.81 3 12.5S6.81 21 11.5 21s8.5-3.81 8.5-8.5S16.19 4 11.5 4"/></svg>
-                {props.alertMsg}
+                {props.sendProps.alertMsg}
             </p>
-            <button className="flex justify-center items-center bg-transparent text-white w-6 h-6 rounded-md shadow-sm active:translate-y-[2px] transition duration-75" onClick={props.closeAlertModal}>
+            <button className="flex justify-center items-center bg-transparent text-white w-6 h-6 rounded-md shadow-sm active:translate-y-[2px] transition duration-75" onClick={props.sendProps.closeAlertModal}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="m12 13.4l-4.9 4.9q-.275.275 -.7.275t-.7-.275t-.275-.7t.275-.7l4.9-4.9l-4.9-4.9q-.275-.275-.275-.7t.275-.7t.7-.275t.7.275l4.9 4.9l4.9-4.9q.275-.275.7-.275t.7.275t.275.7t-.275.7L13.4 12l4.9 4.9q.275.275.275.7t-.275.7t-.7.275t-.7-.275z"/></svg>
             </button>
         </div>
@@ -174,7 +200,7 @@ const ModalConfEmail = (props) => {
 
     return(
         <>
-            <div className={`sm:w-[33rem] w-[28rem] p-3 bg-white z-50 fixed md:top-36 top-44 lg:left-[35%] md:left-[20%] left-[5%] border-[0.8px] border-gray-200 shadow-sm rounded-md min-h-56 px-5 ${props.isModalConfEmaiLOpen ? 'animate-modal-slide-down block translate-y-0' : `animate-modal-slide-up translate-y-[-30rem] ${isHidden ? 'hidden': ''}`} `}>
+            <div className={`md:w-[33rem] w-[28rem] p-3 bg-white z-50 fixed md:top-36 top-44 lg:left-[35%] left-[5%] sm:left-[20%] border-[0.8px] border-gray-200 shadow-sm rounded-md min-h-56 px-5 ${props.isModalConfEmaiLOpen ? 'animate-modal-slide-down block translate-y-0' : `animate-modal-slide-up translate-y-[-30rem] ${isHidden ? 'hidden': ''}`} `}>
                 <div className="flex justify-between mb-3 items-center">
                     <TitlePage title={"Konfirmasi Email"}/>
                     <button className="flex justify-center items-center bg-red-500 text-white w-10 h-10 rounded-md shadow-sm active:translate-y-[2px] transition duration-75 border-[0.8px] border-gray-300" onClick={props.funcModal.closeConfEmailModal}>
@@ -285,10 +311,66 @@ const ModalChangePass = (props) => {
     )
 }
 
+const ModalConfDelete = (props) => {
+    const [isHidden, setIsHidden] = useState(true);
+
+    useEffect(() => {
+       let timerId;
+
+       if(props.sendProps.isModalConfDeleteOpen){
+            timerId = setTimeout(() => {
+                setIsHidden(false);
+            }, 0);
+       } else {
+            timerId = setTimeout(() => {
+                setIsHidden(true);
+            }, 200);
+       }
+
+       return () => {
+            clearTimeout(timerId);
+       }
+    }, [props.sendProps.isModalConfDeleteOpen]);
+
+
+    const deleteAction = () => {
+        props.sendProps.fDeleteComp();
+        props.sendProps.closeModalConfDelete()
+
+    }
+
+    return(
+        <>
+            <div className={`md:w-[33rem] w-[28rem] p-3 bg-white z-50 fixed md:top-36 top-44 lg:left-[35%] left-[5%] sm:left-[20%] border-[0.8px] border-gray-200 shadow-sm rounded-md min-h-56 px-5 ${props.sendProps.isModalConfDeleteOpen ? 'animate-modal-slide-down block translate-y-0' : `animate-modal-slide-up translate-y-[-30rem] ${isHidden ? 'hidden': ''}`} `}>
+                <div className="flex justify-between mb-3 items-center">
+                    <TitlePage title={"Konfirmasi"}/>
+                    <button className="flex justify-center items-center bg-red-500 text-white w-10 h-10 rounded-md shadow-sm active:translate-y-[2px] transition duration-75 border-[0.8px] border-gray-300" onClick={props.sendProps.closeModalConfDelete}>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="m12 13.4l-4.9 4.9q-.275.275-.7.275t-.7-.275t-.275-.7t.275-.7l4.9-4.9l-4.9-4.9q-.275-.275-.275-.7t.275-.7t.7-.275t.7.275l4.9 4.9l4.9-4.9q.275-.275.7-.275t.7.275t.275.7t-.275.7L13.4 12l4.9 4.9q.275.275.275.7t-.275.7t-.7.275t-.7-.275z"/></svg>
+                    </button>
+                </div>
+                <hr />
+                <div className="flex min-h-[6rem] justify-center align-middle items-center">
+                    <p className="text-md font-gibed">
+                        {props.sendProps.alertMsg}
+                    </p>
+                </div>
+                <div className="flex gap-2 justify-end relative bottom-0">
+                    <button className="flex bg-stone-500 text-white rounded-md p-2 items-center justify-center shadow-sm active:translate-y-[2px] transition duration-75" type="button" onClick={props.sendProps.closeModalConfDelete}>
+                        Cancel
+                    </button>
+                    <button className="flex bg-blue-500 text-white rounded-md p-2 items-center justify-center shadow-sm active:translate-y-[2px] transition duration-75" type="button" onClick={deleteAction}>
+                        Ok
+                    </button>
+                </div>
+            </div>
+        </>
+    )
+}
 export {
     ModalCart,
     CartProduct,
     ModalAlertMsg,
     ModalConfEmail,
-    ModalChangePass
+    ModalChangePass,
+    ModalConfDelete
 };
