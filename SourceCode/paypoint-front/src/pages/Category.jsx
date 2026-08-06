@@ -169,7 +169,7 @@ const Category = () => {
                     </button>
                 </Link>
 
-                <DataTable columns={columns} data={tableData} pagination customStyles={customStyle}/>
+                <DataTable columns={columns} data={tableData} pagination customStyles={customStyle} persistTableHead={true}/>
             </MainCard>
 
             

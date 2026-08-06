@@ -13,7 +13,6 @@ const AddCategory = () => {
     const [isProccesSubmit, setProccessSubmit] = useState(false);
     const [idCategory, setIdCategory] = useState(null);
     const [category, setCategory] = useState("");
-    const [fSubmit, setFSubmit] = useState()
     const context = useOutletContext();
     const {id} = useParams();
     const URI = import.meta.env.VITE_API_URL;
@@ -49,7 +48,7 @@ const AddCategory = () => {
                 if(data.status == 200){
                     context.openAlertModal("Sukses Menambahkan Data!", 1);
                 }else {
-                    context.openAlertModal("Gagal Menambahkan data Data!", 0);
+                    context.openAlertModal("Gagal Menambahkan Data!", 0);
                 }
             }).catch(() => {
                     context.openAlertModal("Gagal Menambahkan data!", 0);
