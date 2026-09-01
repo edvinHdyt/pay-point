@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const Category = mongoose.model("Categories", {
+const categorySchema = new mongoose.Schema({
     category: {
         type: String,
         max: 50,
@@ -17,4 +17,6 @@ const Category = mongoose.model("Categories", {
     }
 });
 
-export default Category;
+const Category = new mongoose.model("Category", categorySchema);
+
+export {Category, categorySchema};

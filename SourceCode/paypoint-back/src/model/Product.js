@@ -1,14 +1,10 @@
 import mongoose from "mongoose";
+import {Category, categorySchema} from "./Category.js";
 
-const Product = mongoose.model("Product", {
+const productSchema = new mongoose.Schema({
     product_name: {
         type:String,
         max: 100,
-        required: true
-    },
-    product_image: {
-        type: String,
-        max: 255,
         required: true
     },
     price: {
@@ -24,6 +20,24 @@ const Product = mongoose.model("Product", {
         max: 255, 
         required: true
     },
+    
+    image: {
+        image_id: {
+            type: String,
+            max: 100,
+            required: true
+        },
+        image_url: {
+            type: String,
+            max: 255,
+            required: true
+        },
+        image_name: {
+            type: String,
+            max: 255,
+            required: true
+        }
+    },
     created_at: {
         type: Date,
         required: true
@@ -33,10 +47,22 @@ const Product = mongoose.model("Product", {
         max: 100,
         required: true
     },
-    id_category: {
+    category: {
+        _id: {
+            type: mongoose.Schema.Types.ObjectId, // Tipe data asli ID dari MongoDB
+            required: true
+        },
+        category: {
+            type: String,
+            max: 50,
+            required: true
+        },
+    },
+    price_range_id: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Category'
+        required: true
     }
 })
 
-export default Product;
+const Product = new mongoose.model("Product", productSchema)
+export {productSchema, Product};

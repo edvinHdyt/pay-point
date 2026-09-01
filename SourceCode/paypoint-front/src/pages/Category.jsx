@@ -7,8 +7,6 @@ import TitlePage from '../Components/TitlePage';
 import { BtnEdit, BtnRemove } from '../Components/Button';
 import axios from 'axios';
 
-
-
 const Category = () => {
     const [tableData, setTabelData] = useState([]);
     const [email, setEmail] = useState();
@@ -73,7 +71,7 @@ const Category = () => {
             name: "Action",
             cell: (row) => (
                 <div className="flex">
-                    <BtnEdit action={{id: row.id}}/>
+                    <BtnEdit action={{id: row.id, "page": "edit"}}/>
                     <BtnRemove action={{removeElm, id: row.id}}/>
                 </div>
             )
@@ -153,7 +151,7 @@ const Category = () => {
                 setTabelData(dataCategory);
             }
         }).catch(()=>{
-            
+            context.openAlertModal("Gagal Mengambil Data!", 0);
         })
     }, [])
 

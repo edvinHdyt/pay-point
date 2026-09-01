@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { MainCard } from "../Components/MainCard";
 import TitlePage from "../Components/TitlePage";
-import { Link, useOutlet, useOutletContext } from "react-router-dom";
-import axios from "axios";
+import { Link, useNavigate, useOutlet, useOutletContext, useParams } from "react-router-dom";
+import axios, { Axios } from "axios";
 import { BtnEdit } from "../Components/Button";
 import { AlertError, AlertInptErrors } from "../Components/AlertMessage";
 import Loading from "../Components/Loading";
@@ -13,10 +13,15 @@ const AddProductMaster = () => {
     const [categories, setCategoires]  = useState([]);
     const [isProccesSubmit, setProccessSubmit] = useState(false);
     const [errMsg, setErrMsg] = useState('');
+    const [productData, setProductData] = useState(null);
+    const [srcExist, setSrcExist] = useState("");
+    const [idImage, setIdImage] = useState();
     const URI = import.meta.env.VITE_API_URL;
+    const imgPath = import.meta.env.VITE_PATH_IMAGE;
     let localData = localStorage.getItem(import.meta.env.VITE_KEY_USERLOGIN);
     localData = JSON.parse(localData);
     const context = useOutletContext();
+    const navigate = useNavigate();
     if(email == undefined){
         if(localData.length != 0){
             setEmail(localData.email);
@@ -27,6 +32,8 @@ const AddProductMaster = () => {
     if(localData.length != 0){
         idUser = localData.id_user;
     }
+
+    const productId = useParams();
 
     const [arrErrMsg, setArrErrMsg] = useState(
         [
@@ -89,6 +96,8 @@ const AddProductMaster = () => {
                     return;
                 }
 
+                setIdImage("")
+
                 const fileUrl = URL.createObjectURL(file);
                 imgProduct.src = fileUrl;
                 imgName.innerText = file.name;
@@ -119,15 +128,42 @@ const AddProductMaster = () => {
                 throw new Error("Terjadi Kesalahan");
             }
         }).catch((err) => {
-            console.log(err)
+            context.openAlertModal("Terjadi Kesalahan", 0)
         })
 
         for (let i = 0; i < categories.length; i++) {
             const element = array[i];
-            
         }
     }, []);
 
+
+    useEffect(() => {
+        if (productId.id != undefined){
+            const category = document.getElementById('category')
+            let obj = {
+                email,
+                id: productId.id
+            };
+
+            axios.get(`${URI}product/get/one`, {params: obj})
+            .then((res) => {
+                const datas = res.data;
+
+                if(datas.status == 200){
+                    category.value = datas.product.id_category;
+                    setSrcExist(`${datas.product.image.image_url}`);
+                    setIdImage(datas.product.image.image_id)
+                    setProductData(datas.product);
+                } else {
+                    throw new Error("Terjadi kesalahan");
+                }
+            }).catch((err) => {
+                navigate("/product-master")
+            })
+        }
+    }, []);
+
+ 
     const validateForm = () => {
         const productName = document.getElementById("productName").value;
         const stock = document.getElementById("stock").value;
@@ -202,6 +238,12 @@ const AddProductMaster = () => {
         if(category.toLowerCase() == "default"){
             msg[2].isHidden = false;
             msg[2].msg = "Category harus dipilih!";
+        }else if(price.includes('e')){
+            msg[3].isHidden = false;
+            msg[3].msg = "Harga harus berisi angka!";
+        } else if(stock.includes('e')){
+            msg[1].isHidden = false;
+            msg[1].msg = "Stock harus berisi angka!";
         }
 
         setArrErrMsg(msg);
@@ -235,7 +277,8 @@ const AddProductMaster = () => {
             
             axios.post(`${URI}product/add`, formData)
             .then((res) => {
-                if (res.status == 200){
+                const datas = res.data;
+                if (datas.status == 200){
                     context.openAlertModal("Sukses menambahkan data!", 1);
                 } else {
                     throw new Error();
@@ -250,9 +293,68 @@ const AddProductMaster = () => {
         }
     }
 
+    const updateProduct = () => {
+        setProccessSubmit(true);
+        
+        const productName = document.getElementById("productName").value;
+        const stock = document.getElementById("stock").value;
+        const category_id = document.getElementById("category").value;
+        const price = document.getElementById("price").value;
+        const desc = document.getElementById("descProduct").value;
+        const imgProduct = document.getElementById('imgProduct');
+        const inputFile = document.getElementById("productImg");
+        const inptIdImage = document.getElementById("imageId").value;
+       
+        const isError = validateForm();
+
+        if (!isError && productId.id != undefined){
+            const formData = new FormData();
+            formData.append("email", email)
+            formData.append("productName", productName)
+            formData.append("stock", stock)
+            formData.append("category_id", category_id)
+            formData.append("price", price)
+            formData.append("desc", desc)
+            formData.append("id_user", idUser)
+            formData.append("id_image", inptIdImage)
+            formData.append("id_product", productId.id)
+            formData.append("fileProduct", inputFile.files[0])
+            
+            axios.patch(`${URI}product/update/${productId.id}`, formData)
+            .then((res) => {
+                const datas = res.data;
+                if (datas.status == 200){
+                    context.openAlertModal("Sukses memperbaharui data!", 1);
+                } else {
+                    throw new Error();
+                }
+            }).catch((err) => {
+                context.openAlertModal("Gagal memperbaharui data!", 0)
+            });
+
+            setProccessSubmit(false);
+        } else {
+            setProccessSubmit(false);
+        }
+    }
+
+    const submitForm = () => {
+        if (productId.id != undefined){
+            updateProduct();
+        } else {
+            addProduct();
+        }
+    }
+
+    const title = productId.id == undefined ? "Add Product Master" : "Edit Product Master";
+    let tagImage = <img className="hidden w-52 h-52 border-[0.9px] border-gray-500 rounded-md" id="imgProduct"/>;
+
+    if(srcExist != ""){
+        tagImage =<img className={`block w-52 h-52 border-[0.9px] border-gray-500 rounded-md`} id="imgProduct" src={srcExist}/>
+    }
     return (
         <>
-            <TitlePage title={'Add Product Master'}/>
+            <TitlePage title={title}/>
             <MainCard>
                 <form action="" className="relative">
                     <div className="flex flex-col sm:flex-row sm:items-center sm:gap-10 mb-5 font-montserrat ">
@@ -260,7 +362,7 @@ const AddProductMaster = () => {
                             <label htmlFor="productName">Product Name</label>
                         </div>
                         <div className="flex flex-col w-full gap-5">
-                            <input type="text" name="product-name" id="productName" className="w-full py-2 px-3 border-[0.8px] border-gray-400 rounded-md shadow-sm outline-primary" placeholder="Product Name"/>
+                            <input type="text" name="product-name" id="productName" className="w-full py-2 px-3 border-[0.8px] border-gray-400 rounded-md shadow-sm outline-primary" placeholder="Product Name" defaultValue={productData != null && productData.product_name != undefined ? productData.product_name : ""}/>
                            <span className={`${arrErrMsg[0].isHidden == true ? 'hidden' : 'block'} text-sm text-red-500 font-montserrat mt-[-1rem]`}>{arrErrMsg[0].msg}</span>
                         </div>
                         
@@ -270,7 +372,7 @@ const AddProductMaster = () => {
                             <label htmlFor="stock">Stock</label>
                         </div>
                         <div className="flex flex-col w-full gap-5">
-                            <input type="number" name="product-name" id="stock" className="w-full py-2 px-3 border-[0.8px] border-gray-400 rounded-md shadow-sm outline-primary" placeholder="Stock"/>
+                            <input type="number" name="product-name" id="stock" className="w-full py-2 px-3 border-[0.8px] border-gray-400 rounded-md shadow-sm outline-primary" placeholder="Stock" defaultValue={productData != null && productData.stock != undefined ? productData.stock : ""}/>
 
                            <span className={`${arrErrMsg[1].isHidden == true ? 'hidden' : 'block'} text-sm text-red-500 font-montserrat mt-[-1rem]`}>{arrErrMsg[1].msg}</span>
                         </div>
@@ -282,10 +384,10 @@ const AddProductMaster = () => {
                         </div>
                         <div className="flex flex-col w-full gap-5">
                             <div className="flex relative">
-                                <select name="category" id="category" className="w-full py-2 px-4 border-[0.8px] border-gray-400 rounded-md shadow-sm outline-primary appearance-none" defaultValue={"DEFAULT"}>
-                                    <option disabled value={"DEFAULT"}>Category</option>
+                                <select name="category" id="category" className="w-full py-2 px-4 border-[0.8px] border-gray-400 rounded-md shadow-sm outline-primary appearance-none" defaultValue={productData != null && productData.id_category != undefined ? productData.id_category : ""}>
+                                    <option disabled value={""}>Category</option>
                                     {categories.map(category => (
-                                        <option key={category._id} value={category._id}>{category.category}</option>
+                                        <option key={category._id} value={category._id} >{category.category}</option>
                                     ))}
                                 </select>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="1.8em" height="1.8em" viewBox="0 0 24 24" className="absolute right-3 pointer-events-none top-2">
@@ -305,7 +407,7 @@ const AddProductMaster = () => {
                          <div className="flex flex-col w-full gap-5">
                             <div className="w-full flex">
                                 <div className=" w-12 px-3 py-2 bg-white rounded-md border-[0.8px]  top-0 rounded-r-none border-t-gray-400 border-b-gray-400 border-l-gray-400">Rp</div>
-                                <input type="number" name="product-name" id="price" className="w-full py-2 px-3 border-[0.8px] border-t-gray-400 border-r-gray-400 border-b-gray-400 rounded-l-none shadow-sm outline-primary rounded-r-lg " placeholder="Price"/>
+                                <input type="number" name="product-name" id="price" className="w-full py-2 px-3 border-[0.8px] border-t-gray-400 border-r-gray-400 border-b-gray-400 rounded-l-none shadow-sm outline-primary rounded-r-lg " placeholder="Price" defaultValue={productData != null && productData.price != undefined ? productData.price : ""}/>
                             </div>
 
                            <span className={`${arrErrMsg[3].isHidden == true ? 'hidden' : 'block'} text-sm text-red-500 font-montserrat mt-[-1rem]`}>{arrErrMsg[3].msg}</span>
@@ -317,13 +419,13 @@ const AddProductMaster = () => {
                             <label htmlFor="product_desc">Description</label>
                         </div>
                             <div className="flex flex-col w-full">
-                                <textarea name="" id="descProduct" className="w-full py-2 px-4 border-[0.8px] border-gray-400 rounded-md shadow-sm outline-primary max-h-32 min-h-10" placeholder="Description" onKeyUp={descProduc}></textarea>
+                                <textarea name="" id="descProduct" className="w-full py-2 px-4 border-[0.8px] border-gray-400 rounded-md shadow-sm outline-primary max-h-32 min-h-10" placeholder="Description" onKeyUp={descProduc} defaultValue={productData != null && productData.desc != undefined ? productData.desc : ""}></textarea>
                                 <div className="flex">
                                     <span className={`${arrErrMsg[4].isHidden == true ? 'hidden' : 'block'} text-sm text-red-500 font-montserrat mt-[0.4rem] w-full`}>{arrErrMsg[4].msg}</span>
                                     <div className="flex items-top justify-between w-full">
                                         <span className="text-sm text-red-500 font-montserrat" id="descErrMsg">{descErrMsg}</span>
                                         <span className="text-sm text-tersier-text">{countDesc}/100</span>
-                                    </div>
+                                    </div>  
                                 </div>
                             </div>                       
                     </div>
@@ -342,11 +444,12 @@ const AddProductMaster = () => {
                                             </button>
                                             <span className={`${arrErrMsg[5].isHidden == true ? 'hidden' : 'block'} text-sm text-red-500 font-montserrat mt-[-1rem]`}>{arrErrMsg[5].msg}</span>
                                         </div>
-                                        <span className="text-sm text-tersier-text font-montserrat mt-2" id="imgName"></span>
+                                        <span className="text-sm text-tersier-text font-montserrat mt-2" id="imgName">{productData != null && productData.image != undefined ? productData.image.image_name : ""}</span>
                                     </div>
                                     <span className="text-sm text-red-500 font-montserrat mt-[-1rem]" id="imgErrMsg"></span>
+                                    {tagImage}
+                                    <input type="hidden" name="image_id" id="imageId" defaultValue={idImage} />
                                 </div>
-                                <img className="hidden w-52 h-52 border-[0.9px] border-gray-500 rounded-md" id="imgProduct"/>
                             </div>
 
                       
@@ -357,7 +460,7 @@ const AddProductMaster = () => {
                                 Kembali
                             </button>
                         </Link>
-                        <button className="bg-blue-500 text-white p-2 rounded-md" type="button" onClick={addProduct}>
+                        <button className="bg-blue-500 text-white p-2 rounded-md" type="button" onClick={submitForm}>
                             {isProccesSubmit == false ? "Submit" : <Loading classLoading={"w-7 h-7"}/>}
                         </button>
                     </div>

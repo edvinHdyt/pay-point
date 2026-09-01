@@ -56,6 +56,10 @@ const router = createBrowserRouter ([
         element: <AddProductMaster />
       },
       {
+        path: "product-master/edit/:id",
+        element: <AddProductMaster/ >
+      },
+      {
         path: 'product/payment',
         element: <Payment />
       },

@@ -13,16 +13,6 @@ const productController = new ProductController();
 const app = express();
 app.use(express.json());
 
-// const storage = multer.diskStorage({
-//     destination: function(req, file, cb){
-//         cb(null, "D:/Web-Devel/Project/PayPoint/SourceCode/assets/FileUpload/");
-//     },
-
-//     filename: function(req, file, cb){
-//         cb(null, Date.now() + '-' + file.originalname);
-//     }
-// });
-
 const storage = multer.memoryStorage();
 const upload = multer({storage: storage})
 
@@ -117,12 +107,36 @@ app.get("/product/get", checkUserExistWithGet, (req, res) => {
     productController.getProduct(req, res);
 });
 
+app.get("/product/get/one", checkUserExistWithGet, (req, res) => {
+    productController.getOneProduct(req, res);
+});
+
+app.get("/product/get/category/:id", checkUserExistWithGet, (req, res) => {
+    productController.getProductByCategory(req, res);
+});
+
+app.get('/product/get/price-range', checkUserExistWithGet, (req, res) => {
+    productController.getPriceRange(req, res);
+});
+
+app.get("/product/get/price-range/:id", checkUserExistWithGet, (req, res) => {
+    productController.getProductByPriceRange(req, res);
+})
+
 app.delete("/category/delete/:id", checkUserExistWithGet, (req, res) => {
     categoryController.deleteCategory(req, res);
 });
 
+app.delete("/product/delete/:id", checkUserExistWithGet, (req, res) => {
+    productController.deleteProduct(req, res);
+})
+
 app.patch("/category/update/:id", checkUserExist, (req, res) => {
     categoryController.updateCategory(req, res);
+});
+
+app.patch("/product/update/:id",upload.single('fileProduct'), checkUserExist, (req, res) => {
+    productController.updateProduct(req, res);
 })
 
 app.patch("/auth/verify/:token", (req, res) => {

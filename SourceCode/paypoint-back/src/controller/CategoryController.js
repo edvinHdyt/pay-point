@@ -1,5 +1,5 @@
 import { response } from "express";
-import Category from "../model/Category.js"
+import {Category} from "../model/Category.js"
 import User from "../model/User.js";
 
 

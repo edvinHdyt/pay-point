@@ -5,13 +5,14 @@
   "main": "app.js",
   "type": "module",
   "scripts": {
-      "dev": "nodemon app.js",
-      "start": "node app.js"
+    "dev": "nodemon app.js",
+    "start": "node app.js"
   },
   "author": "edvin",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^6.0.0",
+    "cloudinary": "^2.10.0",
     "cors": "^2.8.6",
     "dotenv": "^17.3.1",
     "express": "^5.2.1",

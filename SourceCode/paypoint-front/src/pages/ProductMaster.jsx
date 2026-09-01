@@ -2,14 +2,17 @@ import { MainCard } from "../Components/MainCard";
 import TitlePage from "../Components/TitlePage";
 import { renderToStaticMarkup } from "react-dom/server";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useOutletContext } from "react-router-dom";
 import DataTable from "react-data-table-component";
 import axios from "axios";
+import { BtnEdit, BtnRemove } from "../Components/Button";
 
 
 const ProductMaster = () => {
+    const [productData, setProductData] = useState([]);
     const [tableData, setTableData] = useState([]);
     const URI = import.meta.env.VITE_API_URL;
+    const context = useOutletContext();
     let localData = localStorage.getItem(import.meta.env.VITE_KEY_USERLOGIN)
     localData = JSON.parse(localData);
     let email;
@@ -60,40 +63,114 @@ const ProductMaster = () => {
         }, 
         {
             name: "Name",
-            selector: row => row.name
+            selector: row => row.product.product_name
         },
         {
             name: "Stock",
-            selector: row => row.stock
+            selector: row => row.product.stock
         },
         {
             name: "Price",
-            selector: row => row.price
+            selector: row => row.product.price
         },
         {
-            name: "Action",
-            cell: (row) => {
-                <div className="flex">
-                    <BtnEdit action={{id: row.id}}/>
-                    <BtnRemove action={{removeElm, id: row.id}}/>
+            name: "Category",
+            cell: (row) => (
+                <div className="flex w-60 h-auto items-center justify-center align-middle bg-primary p-2 rounded-lg  ">
+                    <p>{row.product.category.category}</p>
                 </div>
-            }
+            )
+        },
+       {
+            name: "Action",
+            cell: (row) => (
+                <div className="flex">
+                    <BtnEdit action={{id: row.product.id, "page": "edit"}}/>
+                    <BtnRemove action={{removeElm, id: row.product.id}}/>
+                </div>
+            )
         }
     ]
+
+    let deletedId = 0;
+    const removeElm = (id) => {
+        deletedId = id;
+
+        context.openModalConfDelete("Apakah anda yakin ingin menghapus 1 produk?", removeElmAction);
+    }
+
+    const removeElmAction = () => {
+        if (deletedId != 0){
+            let obj = {
+                email
+            }
+            axios.delete(`${URI}product/delete/${deletedId}`, {params: obj})
+            .then((res) => {
+                const datas = res.data;
+                if (datas.status == 200){
+                    const newTableData = productData.filter((data) => {
+                        return data.product.id != deletedId;
+                    });
+    
+                    let j = 0;
+                    for (let i = 0; i < newTableData.length; i++) {
+                        j++;
+                        newTableData[i].idx = j;
+                    }
+                    setProductData(newTableData);
+                    setTableData(newTableData)
+                    context.openAlertModal("Sukses menghapus data!", 1)
+                } else {
+                    throw new Error("Gagal Menghapus data")
+                }
+            }).catch((err) => {
+                context.openAlertModal("Gagal menghapus data!", 0)
+            })
+        } else {
+            context.openAlertModal("Gagal menghapus data!", 0)
+        }
+    }
 
     useEffect(() => {
         let obj = {
             email
         };
 
-        console.log(email)
         axios.get(`${URI}product/get`, {params: obj})
         .then((res)=>{
-            console.log(res);
+            const datas = res.data;
+            if (datas.status == 200){
+                let obj = [];
+                let i = 0;
+                datas.product.forEach(elm => {
+                    i++;
+                    obj.push(
+                        {idx: i, product: elm}
+                    )
+                });
+                setProductData(obj);
+                setTableData(obj);
+            } else {
+                throw new Error(res.msg);
+            }
         }).catch((err)=>{
-            console.log(err);
+            context.openAlertModal("Gagal Mengambil Data!", 0);
         })
     }, []);
+
+    const searchProductName = () =>{
+        const inputSearch = document.getElementById("searchProduct").value;
+        
+        if (inputSearch.trim().length != 0){
+            let productFilter = productData.filter((data) => {
+                return data.product.product_name.includes(inputSearch);
+            })
+
+            setTableData(productFilter);
+        } else {
+            setTableData(productData)
+        }
+    }
 
     return (
         <>
@@ -102,8 +179,7 @@ const ProductMaster = () => {
             <MainCard >
                 <div className="flex flex-wrap-reverse gap-2 md:gap-11 justify-between">
                     <div className="flex gap-2">
-                        <input type="text" placeholder="Cari Produk" className="w-65 h-9 p-3 border-[0.8px] border-stone-400 rounded-md outline-[0.8px] outline-primary "/>
-                        <button type="button" className="w-14 h-9 bg-blue-500 text-white rounded-md shadow-sm active:translate-y-[2px] transition duration-75">Cari</button>
+                        <input type="text" placeholder="Cari Produk" className="w-65 h-9 p-3 border-[0.8px] border-stone-400 rounded-md outline-[0.8px] outline-primary " onKeyUp={searchProductName} id="searchProduct"/>
                     </div>
                     <div className="flex justify-end align-end">
                         <Link to={'add'}>
