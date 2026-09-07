@@ -14,9 +14,11 @@ const Product = () => {
     let localData = localStorage.getItem(import.meta.env.VITE_KEY_USERLOGIN)
     localData = JSON.parse(localData);
     let email;
+    let idUser;
     
     if (localData != undefined){
         email = localData.email;
+        idUser = localData.id_user;
     }
 
     useEffect(() => {
@@ -146,11 +148,48 @@ const Product = () => {
         }
     }
 
+    const addCart = (e) => {
+        const idProduct = e.target.id;
+
+        if(idProduct != ""){
+            let obj = {
+                idUser,
+                idProduct,
+                email
+            }
+            
+            // check stock
+            const productFiltered = dataProduct.filter((data) => {
+                return data.id == idProduct;
+            });
+
+            if(productFiltered[0].stock - 1 < 0){
+                outlietContext.openAlertModal("Stock tidak mencukupi", 0);
+                return;
+            }
+
+
+            axios.post(`${URI}cart/add`, obj)
+            .then((res) => {
+                const data = res.data;
+                if(data.status == 200){
+                    outlietContext.handlingCartLength();
+                    outlietContext.openAlertModal(data.msg, 1);
+                } else {
+                    throw new Error("Gagal menambahkan ke keranjang")
+                }
+            }).catch((err) => {
+                outlietContext.openAlertModal(err.message, 0);
+            })
+        }
+    }
+
     let productCard;
 
     if (mainProductData.length > 0){
         productCard = mainProductData.map(product=> (
-            <ProductCard handlingCartLength={outlietContext.handlingCartLength} openAlertModal={outlietContext.openAlertModal} product={product} key={product.id}/>
+            // <ProductCard handlingCartLength={outlietContext.handlingCartLength} openAlertModal={outlietContext.openAlertModal} product={product} key={product.id}/>
+            <ProductCard action={{addCart}} product={product} key={product.id}/>
         ))
     } else {
         productCard = <p>Tidak ada data</p>

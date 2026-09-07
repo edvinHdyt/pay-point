@@ -1,2 +1,4 @@
 node_modules/
 .env
+paypoint-back/.env
+paypoint-front/.env

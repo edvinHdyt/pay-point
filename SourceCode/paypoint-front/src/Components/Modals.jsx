@@ -1,60 +1,70 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import TitlePage from "./TitlePage";
 import { BtnPrimary } from "./Button";
+import axios from "axios";
 
 const CartProduct = (props) => {
-    const getImageUrl = (name) => {
-        return new URL(`../assets/images/foods/${name}`, import.meta.url).href;
+    const product = props.data.product;
+
+    const [quantity, setQuantity] = useState(props.data.quantity);
+
+    const rpFormatter = new Intl.NumberFormat("id-ID", {
+        style: 'currency',
+        currency: 'IDR'
+    });
+
+    const removeProduct = (e) => {
+        const id = e.target.dataset["value"];
+        props.action.deleteCartAction(id);
     }
 
-    const [quantity, setQuantity] = useState(1);
+    const increseQuantity = () => {
+        const liveQuantityVal = quantity + 1;
+        setQuantity(quantity + 1);
+        props.action.updateQuantity(props.data.id, liveQuantityVal);
+    }
 
-    const checkQuantity = () => {
+    const decreseQuantity = () => {
         if (quantity > 1){
+            const liveQuantityVal = quantity - 1;
             setQuantity(quantity - 1);
+            props.action.updateQuantity(props.data.id, liveQuantityVal);
+        } else {
+            props.action.deleteCartAction(props.data.id);
         }
     }
 
-    const removeProduct = () => {
-        const id = event.target.dataset["value"];
-        const elm = document.getElementById(`card-${id}`);
-        elm.remove();
-
-        props.countItem();
-    }
-
     return (
-        <div className={`flex ${props.payment ? 'flex-col' : 'flex-row'} justify-between mb-3 w-auto h-auto`} id={`card-${props.idProduct}`}>
-            <div className="flex flex-row gap-3">
-                <img src={getImageUrl("americano.jpeg")} alt="americano" className={`${props.payment ? "w-[90px] h-[90px]" : "w-20 h-20"} rounded-md`}/>
+        <div className={`flex ${props.payment ? 'flex-col' : 'flex-row'} justify-between mb-3 w-auto h-auto`} id={`card-${props.data.id}`} key={props.data.id}>
+            <div className="flex flex-row gap-3" >
+                <img src={product.image.image_url} alt={product.image.image_name} className={`${props.payment ? "w-[90px] h-[90px]" : "w-20 h-20"} rounded-md`}/>
                 <div className="flex flex-col gap-1">
                     <h1 className="text-1xl font-primary-text">
-                        Americano
+                        {product.name}
                     </h1>
                    <p className={`text-[0.8rem] text-tersier-text flex gap-1 ${props.payment ? "": "hidden"}`}>
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"><path fill="currentColor" d="M8 3h8a3 3 0 0 1 3 3v15l-7-3l-7 3V6a3 3 0 0 1 3-3m0 1a2 2 0 0 0-2 2v13.5l6-2.56l6 2.56V6a2 2 0 0 0-2-2z"/></svg> {quantity}x
                    </p>
                     <p className="text-[0.8rem] text-tersier-text flex gap-1">
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"><path fill="currentColor" d="M5.5 7A1.5 1.5 0 0 1 4 5.5A1.5 1.5 0 0 1 5.5 4A1.5 1.5 0 0 1 7 5.5A1.5 1.5 0 0 1 5.5 7m15.91 4.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.11 0-2 .89-2 2v7c0 .55.22 1.05.59 1.41l8.99 9c.37.36.87.59 1.42.59s1.05-.23 1.41-.59l7-7c.37-.36.59-.86.59-1.41c0-.56-.23-1.06-.59-1.42"/></svg>
-                        Minuman
+                        {product.category}
                     </p>
-                    <p className="text-[0.8rem] text-tersier-text flex gap-1">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"><path fill="currentColor" d="M11.025 21v-2.15q-1.325-.3-2.287-1.15t-1.413-2.4l1.85-.75q.375 1.2 1.113 1.825t1.937.625q1.025 0 1.738-.462t.712-1.438q0-.875-.55-1.387t-2.55-1.163q-2.15-.675-2.95-1.612t-.8-2.288q0-1.625 1.05-2.525t2.15-1.025V3h2v2.1q1.25.2 2.063.913t1.187 1.737l-1.85.8q-.3-.8-.85-1.2t-1.5-.4q-1.1 0-1.675.488T9.825 8.65q0 .825.75 1.3t2.6 1q1.725.5 2.613 1.588t.887 2.512q0 1.775-1.05 2.7t-2.6 1.15V21z"/></svg>
-                        23.000
+                    <p className="text-[0.8rem] text-tersier-text flex gap-1">  
+                        {rpFormatter.format(product.price)}
                     </p>
                 </div>
             </div>
             <div className={`flex items-center gap-2 ${props.payment ? 'hidden' : ''}`}>
-                <button className="flex bg-slate-200 rounded-md w-8 h-8 items-center justify-center shadow-sm active:translate-y-[2px] transition duration-75" onClick={checkQuantity} >
+                <button className="flex bg-slate-200 rounded-md w-8 h-8 items-center justify-center shadow-sm active:translate-y-[2px] transition duration-75" onClick={decreseQuantity} >
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M19 13H5v-2h14z"/></svg>
                 </button>
                 <p className="text-[1rem] ms-2 mr-2">{quantity}</p>
-                <button className="flex bg-slate-200 rounded-md w-8 h-8 items-center justify-center shadow-sm active:translate-y-[2px] transition duration-75" onClick={() => setQuantity(quantity + 1)}>
+                <button className="flex bg-slate-200 rounded-md w-8 h-8 items-center justify-center shadow-sm active:translate-y-[2px] transition duration-75" onClick={increseQuantity}>
                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6z"/></svg>
                 </button>
-                <button className="flex bg-red-600 rounded-md w-8 h-8 items-center justify-center shadow-sm text-white active:translate-y-[2px] transition duration-75" onClick={removeProduct} data-value={props.idProduct}>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" data-value={props.idProduct}><path fill="currentColor" d="M19 4h-3.5l-1-1h-5l-1 1H5v2h14M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6z" data-value={props.idProduct}/></svg>
+                <button className="flex bg-red-600 rounded-md w-8 h-8 items-center justify-center shadow-sm text-white active:translate-y-[2px] transition duration-75" onClick={removeProduct} data-value={props.data.id}>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" data-value={props.data.id}><path fill="currentColor" d="M19 4h-3.5l-1-1h-5l-1 1H5v2h14M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6z" data-value={props.data.id}/></svg>
                 </button>
             </div>
         </div>
@@ -65,6 +75,72 @@ const CartProduct = (props) => {
 const ModalCart = (props) => {
     const [isCartEmpty, setIsCartEmpty] = useState(false);
     const [isHidden, setIsHidden] = useState(true);
+    const [cartData, setCartData] = useState([]);
+    const [totalPrice, setTotalPrice] = useState(0);
+    const userLogin = props.action.userLogin;
+    const apiuri = import.meta.env.VITE_API_URL;
+    const getCartLengthF = props.action.getCartLength;
+
+    const updateQuantity = (cartId, newQuantity) => {
+        let obj = {
+            cartId,
+            quantity: newQuantity,
+            email: userLogin.email
+        };
+        
+        axios.patch(`${apiuri}cart/update/quantity`, obj)
+        .then((res) => {
+            const data = res.data;
+            if(data.status == 200){
+                const arrId = cartData.map((elm, i) => {
+                     if (elm.id == cartId){
+                         return i
+                     }
+                 }).filter((elm) => elm != undefined);
+     
+                 let newArrCart = cartData;
+                 newArrCart[arrId].quantity = newQuantity;
+                 
+                 setCartData(newArrCart);
+     
+                 const total = newTotalPrice(cartData);
+                 setTotalPrice(total);
+            } else {
+                throw new Error("Gagal memperbaharui quantity");
+            }
+        }).catch((err) => {
+            props.openAlertModal(err.message, 0)
+        })
+    }
+
+    const rpFormatter = new Intl.NumberFormat("id-ID", {
+        style: 'currency',
+        currency: 'IDR'
+    });
+
+    useEffect(() => {
+        if(props.isModalCartOpen){
+            axios.get(`${apiuri}cart/get-all/${userLogin.id_user}`, {params: {email: userLogin.email}})
+            .then((res) => {
+                const data = res.data;
+                if (data.status == 200){
+                    if(data.cart.length == 0){
+                        setIsCartEmpty(true);
+                    } else {
+                        setIsCartEmpty(false);
+                    }
+
+                    const total = newTotalPrice(data.cart);
+                    setTotalPrice(total);
+                    setCartData(data.cart);
+                } else {
+                    throw new Error("Terjadi kesalahan");
+                }
+            }).catch((err) => {
+                props.openAlertModal(err.message, 0)
+            })
+        }
+    }, [props.isModalCartOpen]);
 
     useEffect(() => {
         let timerId;
@@ -91,6 +167,42 @@ const ModalCart = (props) => {
         }
     }
 
+    const newTotalPrice = (data) => {
+        let total = 0;
+
+        if (data.length > 0){
+            data.forEach(elm => {
+                total += elm.product.price * elm.quantity;
+            });
+        }
+
+        return total;
+    }
+
+    const deleteCartAction = (cartId) => {        
+        axios.delete(`${apiuri}cart/delete/${cartId}`, {params: {email: userLogin.email}})
+        .then((res) => {
+            const data = res.data;
+            if(data.status == 200){
+                countItem();
+                getCartLengthF();
+                const newArrCart = cartData.filter((elm) => {
+                    return elm.id != cartId;
+                });
+
+                setCartData(newArrCart);
+                
+                const total = newTotalPrice(newArrCart);
+                setTotalPrice(total);
+            } else {
+                throw new Error("Gagal menghapus item");
+            }
+        }). catch((err) => {
+            props.openAlertModal(err.message, 0);
+        })
+    }
+
+    const openAlertModalF = props.openAlertModal;
     return (
         <>
             <div className={`bg-white w-10/12 fixed z-50  py-4 px-6 top-[10%] shadow-md rounded-md lg:left-[10rem] left-[10%] font-montserrat min-h-96  ${props.isModalCartOpen ? 'animate-modal-slide-down block translate-y-0' : `animate-modal-slide-up translate-y-[-30rem] ${isHidden ? 'hidden': ''}`}`}>
@@ -103,16 +215,19 @@ const ModalCart = (props) => {
                 <hr />
                 <div className="min-h-60">
                     <div className={`${isCartEmpty ? 'flex' : 'hidden'} justify-center items-center relative top-[7rem]`}>
-                            <p className="text-tersier-text ">There's no item in cart</p>
+                        <p className="text-tersier-text ">There's no item in cart</p>
                     </div>
 
                     <div className="overflow-y-auto max-h-60 mt-3" id="products">
-                            <CartProduct idProduct="1" countItem={countItem} />
-                            <CartProduct idProduct="2" countItem={countItem}/>
-                            <CartProduct idProduct="3" countItem={countItem} />
+                        {cartData.map((cart) => (
+                            <CartProduct data={cart} payment={false} action={{updateQuantity, apiuri, userLogin, openAlertModalF, countItem, getCartLengthF, deleteCartAction}} key={cart.id}/>
+                        ))}
                     </div>
                 </div>
-               <div className="flex justify-end mt-3">  
+               <div className="flex justify-end mt-3">
+                <span className="me-3 mt-1 text-tersier-text">
+                    Total: {rpFormatter.format(totalPrice)}
+                </span>
                 <Link to={"product/payment"}>
                     <button className="p-2 bg-primary rounded-md shadow-sm active:translate-y-[2px] transition duration-75" onClick={props.closeModalCart}>
                         Checkout Sekarang

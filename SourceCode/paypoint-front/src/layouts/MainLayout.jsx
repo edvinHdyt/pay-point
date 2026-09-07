@@ -7,6 +7,7 @@ import { ModalCart, ModalAlertMsg, ModalConfEmail,
     ModalChangePass, ModalConfDelete
  } from "../Components/Modals";
 import axios from "axios";
+import { use } from "react";
 
 const Breadcrumb = () => {
     return (
@@ -49,6 +50,7 @@ const MainLayout = () => {
     // const [isDeleteData, setIsDeleteData] = useState(false);
     const [username, setUsername] = useState("");
     const [fDeleteComp, setFDeleteComp] = useState();
+
     
     const handlingCartLength = () => {
         setCartLength(cartLength + 1);
@@ -137,6 +139,28 @@ const MainLayout = () => {
         return <Navigate to={"/auth"} replace/>
     }
 
+
+    useEffect(() => {
+       getCartLength();
+    }, []);
+
+    const getCartLength = () => {
+        const {id_user, email} = userLogin;
+        
+        axios.get(`${apiuri}cart/get-length/${id_user}`, {params:{email:email}})
+        .then((res) => {
+            const data = res.data;
+            if(data.status == 200){
+                setCartLength(data.cartLength);
+            } else {
+                throw new Error("Terjadi kesalahan");
+            }
+        }).catch((err) => {
+            openAlertModal(err.message, 0);
+        })
+    }
+
+
     const dataContext = {
         handlingCartLength,
         openAlertModal,
@@ -163,7 +187,7 @@ const MainLayout = () => {
                 </div>
             </div>
             
-            <ModalCart isModalCartOpen={isModalCartOpen} closeModalCart={closeModalCart} />
+            <ModalCart isModalCartOpen={isModalCartOpen} closeModalCart={closeModalCart} action={{userLogin, getCartLength}} openAlertModal={openAlertModal}/>
             <ModalAlertMsg sendProps={{
                 alertMsg,
                 isModalAlertOpen,
