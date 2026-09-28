@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { MainCard } from "../Components/MainCard";
 import TitlePage from "../Components/TitlePage";
-import { Link, useNavigate, useOutlet, useOutletContext, useParams } from "react-router-dom";
+import { Link, useNavigate, useOutletContext, useParams } from "react-router-dom";
 import axios, { Axios } from "axios";
 import { BtnEdit } from "../Components/Button";
 import { AlertError, AlertInptErrors } from "../Components/AlertMessage";
@@ -12,12 +12,10 @@ const AddProductMaster = () => {
     const [email, setEmail] = useState();
     const [categories, setCategoires]  = useState([]);
     const [isProccesSubmit, setProccessSubmit] = useState(false);
-    const [errMsg, setErrMsg] = useState('');
     const [productData, setProductData] = useState(null);
     const [srcExist, setSrcExist] = useState("");
     const [idImage, setIdImage] = useState();
     const URI = import.meta.env.VITE_API_URL;
-    const imgPath = import.meta.env.VITE_PATH_IMAGE;
     let localData = localStorage.getItem(import.meta.env.VITE_KEY_USERLOGIN);
     localData = JSON.parse(localData);
     const context = useOutletContext();
@@ -127,13 +125,9 @@ const AddProductMaster = () => {
             } else {
                 throw new Error("Terjadi Kesalahan");
             }
-        }).catch((err) => {
+        }).catch(() => {
             context.openAlertModal("Terjadi Kesalahan", 0)
         })
-
-        for (let i = 0; i < categories.length; i++) {
-            const element = array[i];
-        }
     }, []);
 
 
@@ -157,7 +151,7 @@ const AddProductMaster = () => {
                 } else {
                     throw new Error("Terjadi kesalahan");
                 }
-            }).catch((err) => {
+            }).catch(() => {
                 navigate("/product-master")
             })
         }
@@ -258,7 +252,6 @@ const AddProductMaster = () => {
         const category_id = document.getElementById("category").value;
         const price = document.getElementById("price").value;
         const desc = document.getElementById("descProduct").value;
-        const imgProduct = document.getElementById('imgProduct');
         const inputFile = document.getElementById("productImg");
        
         const isError = validateForm();
@@ -283,7 +276,7 @@ const AddProductMaster = () => {
                 } else {
                     throw new Error();
                 }
-            }).catch((err) => {
+            }).catch(() => {
                 context.openAlertModal("Gagal Menambahkan data!", 0)
             });
 
@@ -301,7 +294,6 @@ const AddProductMaster = () => {
         const category_id = document.getElementById("category").value;
         const price = document.getElementById("price").value;
         const desc = document.getElementById("descProduct").value;
-        const imgProduct = document.getElementById('imgProduct');
         const inputFile = document.getElementById("productImg");
         const inptIdImage = document.getElementById("imageId").value;
        
@@ -328,7 +320,7 @@ const AddProductMaster = () => {
                 } else {
                     throw new Error();
                 }
-            }).catch((err) => {
+            }).catch(() => {
                 context.openAlertModal("Gagal memperbaharui data!", 0)
             });
 

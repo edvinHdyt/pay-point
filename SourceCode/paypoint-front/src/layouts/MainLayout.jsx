@@ -7,7 +7,6 @@ import { ModalCart, ModalAlertMsg, ModalConfEmail,
     ModalChangePass, ModalConfDelete
  } from "../Components/Modals";
 import axios from "axios";
-import { use } from "react";
 
 const Breadcrumb = () => {
     return (
@@ -139,11 +138,6 @@ const MainLayout = () => {
         return <Navigate to={"/auth"} replace/>
     }
 
-
-    useEffect(() => {
-       getCartLength();
-    }, []);
-
     const getCartLength = () => {
         const {id_user, email} = userLogin;
         
@@ -160,6 +154,7 @@ const MainLayout = () => {
         })
     }
 
+    getCartLength();
 
     const dataContext = {
         handlingCartLength,
@@ -167,6 +162,7 @@ const MainLayout = () => {
         openConfEmailModal,
         openModalConfDelete,
         closeModalConfDelete,
+        getCartLength,
         username
     };
 
@@ -187,7 +183,7 @@ const MainLayout = () => {
                 </div>
             </div>
             
-            <ModalCart isModalCartOpen={isModalCartOpen} closeModalCart={closeModalCart} action={{userLogin, getCartLength}} openAlertModal={openAlertModal}/>
+            <ModalCart isModalCartOpen={isModalCartOpen} closeModalCart={closeModalCart} action={{userLogin, getCartLength, cartLength}} openAlertModal={openAlertModal}/>
             <ModalAlertMsg sendProps={{
                 alertMsg,
                 isModalAlertOpen,

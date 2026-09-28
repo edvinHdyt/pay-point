@@ -21,6 +21,24 @@ const Product = () => {
         idUser = localData.id_user;
     }
 
+
+    const getAllProduct = () => {
+        axios.get(`${URI}product/get`, {params: {email}})
+        .then((res) => {
+            const datas = res.data;
+
+            if(datas.status == 200){
+                setDataProduct(datas.product);
+                setMainProductData(datas.product);
+            } else {
+                throw new Error("Gagal mengambil data");
+            }
+        }).catch(() => {
+            outlietContext.openAlertModal("Gagal mengambil data", 0);
+        });
+    }
+
+
     useEffect(() => {
         getAllProduct();
 
@@ -55,7 +73,7 @@ const Product = () => {
             } else {
                 throw new Error(res.msg);
             }
-        }).catch((err) => {
+        }).catch(() => {
             outlietContext.openAlertModal("Gagal mengambil data rentang harga", 0);
         })
 
@@ -68,26 +86,12 @@ const Product = () => {
             } else {
                 throw new Error("Gagal mengambil data");
             }
-        }).catch((err) => {
+        }).catch(() => {
             outlietContext.openAlertModal("Gagal mengambil data kategori", 0);
         });
     }, []);
 
-    const getAllProduct = () => {
-        axios.get(`${URI}product/get`, {params: {email}})
-        .then((res) => {
-            const datas = res.data;
-
-            if(datas.status == 200){
-                setDataProduct(datas.product);
-                setMainProductData(datas.product);
-            } else {
-                throw new Error("Gagal mengambil data");
-            }
-        }).catch((err) => {
-            outlietContext.openAlertModal("Gagal mengambil data", 0);
-        });
-    }
+   
 
     const getProductByCategory = (e) => {
         const idCategory = e.target.value;
@@ -104,7 +108,7 @@ const Product = () => {
                     throw new Error("Gagal mengambil data");
                 }
 
-            }).catch((err) => {
+            }).catch(() => {
                 outlietContext.openAlertModal("Gagal mengambil data", 0);
             })
         } else {
@@ -126,7 +130,7 @@ const Product = () => {
                     throw new Error("Gagal mengambil data");
                 }
     
-            }).catch((err) => {
+            }).catch(() => {
                 outlietContext.openAlertModal("Gagal mengambil data", 0);
             })
         } else {
@@ -188,7 +192,6 @@ const Product = () => {
 
     if (mainProductData.length > 0){
         productCard = mainProductData.map(product=> (
-            // <ProductCard handlingCartLength={outlietContext.handlingCartLength} openAlertModal={outlietContext.openAlertModal} product={product} key={product.id}/>
             <ProductCard action={{addCart}} product={product} key={product.id}/>
         ))
     } else {

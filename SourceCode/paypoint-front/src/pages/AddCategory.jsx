@@ -11,7 +11,6 @@ const AddCategory = () => {
     const [isErrMsgHidden, setIsErrMsgHidden] = useState(true);
     const [errMsg, setErrMsg] = useState('');
     const [isProccesSubmit, setProccessSubmit] = useState(false);
-    const [idCategory, setIdCategory] = useState(null);
     const [category, setCategory] = useState("");
     const context = useOutletContext();
     const {id} = useParams();
@@ -108,7 +107,7 @@ const AddCategory = () => {
                 } else {    
                     context.openAlertModal("Terjadi masalah, silahkan coba lagi!", 0);
                 }
-            }).catch((err) => {
+            }).catch(() => {
                 context.openAlertModal("Terjadi masalah, silahkan coba lagi!", 0);
             })
         }

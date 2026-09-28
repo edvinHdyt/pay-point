@@ -5,6 +5,7 @@ import UserController from '../controller/UserController.js';
 import CategoryController from '../controller/CategoryController.js';
 import ProductController from '../controller/ProductController.js';
 import CartController from '../controller/CartController.js';
+import OrderController from '../controller/OrderController.js';
 import User from '../model/User.js';
 import cors from 'cors';
 const authenticationController = new AuthenticationController();
@@ -12,6 +13,7 @@ const userController = new UserController();
 const categoryController = new CategoryController();
 const productController = new ProductController();
 const cartController = new CartController();
+const orderController = new OrderController();
 const app = express();
 app.use(express.json());
 
@@ -95,6 +97,10 @@ app.post("/category/add", checkUserExist, (req, res) => {
 
 app.post("/cart/add", checkUserExist, (req, res) => {
     cartController.addCart(req, res);
+});
+
+app.post("/order/payment/procced", checkUserExist, (req, res) => {
+    orderController.addNewOrder(req, res);
 });
 
 app.post("/product/add",upload.single('fileProduct'), checkUserExist,  (req,  res) => {

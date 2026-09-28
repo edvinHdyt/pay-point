@@ -2,7 +2,7 @@ import DataTable from 'react-data-table-component';
 
 import {MainCard} from '../Components/MainCard';
 import { useEffect, useState } from 'react';
-import { Link,  useOutletContext, Navigate, useNavigate } from 'react-router-dom';
+import { Link,  useOutletContext, Navigate } from 'react-router-dom';
 import TitlePage from '../Components/TitlePage';
 import { BtnEdit, BtnRemove } from '../Components/Button';
 import axios from 'axios';
@@ -12,7 +12,6 @@ const Category = () => {
     const [email, setEmail] = useState();
     const context = useOutletContext();
     const URI = import.meta.env.VITE_API_URL;
-    let navigate = useNavigate();
 
     if (email == undefined){
         let localData = localStorage.getItem(import.meta.env.VITE_KEY_USERLOGIN)

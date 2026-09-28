@@ -1,6 +1,5 @@
 import { MainCard } from "../Components/MainCard";
 import TitlePage from "../Components/TitlePage";
-import { renderToStaticMarkup } from "react-dom/server";
 import { useEffect, useState } from "react";
 import { Link, useOutletContext } from "react-router-dom";
 import DataTable from "react-data-table-component";
@@ -123,7 +122,7 @@ const ProductMaster = () => {
                 } else {
                     throw new Error("Gagal Menghapus data")
                 }
-            }).catch((err) => {
+            }).catch(() => {
                 context.openAlertModal("Gagal menghapus data!", 0)
             })
         } else {
@@ -153,7 +152,7 @@ const ProductMaster = () => {
             } else {
                 throw new Error(res.msg);
             }
-        }).catch((err)=>{
+        }).catch(()=>{
             context.openAlertModal("Gagal Mengambil Data!", 0);
         })
     }, []);
