@@ -8,6 +8,7 @@ import CartController from '../controller/CartController.js';
 import OrderController from '../controller/OrderController.js';
 import User from '../model/User.js';
 import cors from 'cors';
+import Authorization from './midtrans/authorization.js';
 const authenticationController = new AuthenticationController();
 const userController = new UserController();
 const categoryController = new CategoryController();
