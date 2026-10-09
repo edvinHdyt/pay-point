@@ -4,6 +4,9 @@ import { Link, Outlet, useNavigate, useOutletContext } from "react-router-dom";
 import { CartProduct } from "../Components/Modals";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import getCookie from "../lib/GetCookie";
+import updateQuantity from "../lib/UpdateQuantity";
+import CalculateTotalPrice from "../lib/CalculateTotalPrice";
 
 const Payment = () => {
     const [isPaymentCash, setIsPaymentCash] = useState(false);
@@ -11,6 +14,7 @@ const Payment = () => {
     const [chargeTotal, setchargeTotal] = useState(0);
     const [payErrMsg, setPayErrMsg] = useState(null);
     const [nameErrMsg, setNameErrMsg] = useState(null);
+    const [payTotal, setPayTotal] = useState(0);
     const [payTypeErrMsg, setpayTypeErrMsg] = useState(null);
 
     const outlietContext = useOutletContext();
@@ -25,9 +29,7 @@ const Payment = () => {
         const elm = event.target;
         elm.value == 1 ? setIsPaymentCash(true) : setIsPaymentCash(false);
 }
-
-    const userLogin = localStorage.getItem(import.meta.env.VITE_KEY_USERLOGIN) == null ? null :  JSON.parse(localStorage.getItem(import.meta.env.VITE_KEY_USERLOGIN));
-    const apiuri = import.meta.env.VITE_API_URL;
+    const {userLogin, apiuri} = getCookie();
 
     let email, idUser;
     if (userLogin != null){
@@ -40,21 +42,32 @@ const Payment = () => {
             axios.get(`${apiuri}cart/get-all/${idUser}`, {params: {email}})
             .then((res) => {
                 const datas = res.data;
-                if(datas.status == 200){                    
+                if(datas.status == 200){
+                    
+                    if (datas.cart.length == 0){
+                        navigate("/product");
+                        throw new Error("Data keranjang kosong");
+                    }
+
                     setProduct(datas.cart);
+
+                    const calculateTotal = datas.cart.reduce((total, item) => {
+                        const price = item.product.price || 0;
+                        const quantity = item.quantity || 0;
+                        
+                        return total + (price * quantity);
+                    }, 0);
+
+                    setPayTotal(calculateTotal);
+                } else {
+                    throw new Error("Gagal mengambil data!");
                 }
-            }).catch(() => {
-                outlietContext.openAlertModal("Gagal mengambil data!");
+            }).catch((err) => {
+                outlietContext.openAlertModal(err.message, 0);
             })
         }
     }, []);
 
-    const payTotal = products.reduce((total, item) => {
-      const price = item.product.price || 0;
-      const quantity = item.quantity || 0;
-      
-      return total + (price * quantity);
-    }, 0)
 
 
     const calculateCharge = (e) => {
@@ -65,22 +78,103 @@ const Payment = () => {
 
             setPayErrMsg("Payment tidak boleh kurang dari payment total!");
         } else {
-            setPayErrMsg(null);
+            setPayErrMsg(null); 
         }
         
         setchargeTotal(charge);
+    }
+
+    const getTokenizer = (data) => {
+        axios.post(`${apiuri}order/payment/procced/get/token`, {
+            email: email,
+            order_id: data.order_id,
+            customerName: data.customer_name,
+            gross_amount: data.gross_amount
+        }).then((res) => {
+            const datas = res.data;
+            if (datas.status == 200){   
+                window.snap.pay(datas.data.token, {
+                    onSuccess: () => {
+                        outlietContext.getCartLength();
+                        navigate("/product");
+                        outlietContext.openAlertModal("Pembayaran berhasil!", 1);
+                    },
+                    onError: (err) => {
+                        throw new Error(err);
+                    }
+                });
+            } else {
+                throw new Error("Gagal mengambil token");
+            }
+            
+        }).catch((err) => {
+            outlietContext.openAlertModal(err.message, 0);
+            deleteOrder(data.order_id);
+        });
+    }
+
+    const deleteOrder = (orderId) => {
+        if (orderId != undefined){
+            axios.delete(`${apiuri}order/delete/${orderId}`,{params: {
+                email,
+                orderId
+            }}).then((res) => {
+                const datas = res.data;
+                
+                if (datas.status == 200){
+                    outlietContext.openAlertModal(datas.msg, 1);
+                } else {
+                    throw new Error("Gagal menghapus data order!");
+                }
+            }).catch((err) => {
+                outlietContext.openAlertModal(err.message, 0);
+                let timeoutId = setTimeout(() => {
+                    deleteOrder(orderId);
+                }, 500);
+
+                clearTimeout(timeoutId);
+            })
+        }
+    }
+
+    const actionUpdateQuantity = async (liveQuantityVal, cartDataProccess) => {
+        const newCartData = await updateQuantity(liveQuantityVal, cartDataProccess);
+        
+        if (newCartData != false){
+            let oldCartData = products;
+            oldCartData = oldCartData.map((data) => {
+                if (data.id == newCartData.id){
+                    data.quantity = newCartData.quantity;
+                }
+
+                return data;
+            });
+            
+            setProduct(oldCartData);
+
+            setPayTotal(CalculateTotalPrice(products));
+        }
     }
 
     const proccedPayment = () => {
         const nameInpt = document.getElementById("customer").value;
         const payType = document.getElementById("paymentType").value;
         let payment = document.getElementById("payment").value;
-        if (nameInpt == "" || payType == "default" || payment < payTotal || chargeTotal == ""){
+
+        let paymentValidation;
+        if (payType == 1){
+            paymentValidation = payment < payTotal;
+        } else {
+            paymentValidation = false;
+            payment = payTotal;
+        }
+
+        if (nameInpt == "" || payType == "default" || paymentValidation){            
             if (nameInpt == ""){
                 setNameErrMsg("Nama Kustomer tidak boleh kosong!");
             } else if(payType == "default"){
                 setpayTypeErrMsg("Tipe payment harus dipilih!");
-            } else if(payment < payTotal || payment == ""){
+            } else if(paymentValidation || payment == ""){
                 setPayErrMsg("Payment tidak boleh kurang dari payment total!");
             } else {
                 setNameErrMsg(null);
@@ -110,6 +204,7 @@ const Payment = () => {
             paymentType: payType
         }
 
+        // console.log(payType)
         if (payType == 1){
             axios.post(`${apiuri}order/payment/procced`, data)
             .then((res) => {
@@ -118,7 +213,19 @@ const Payment = () => {
                 if (datas.status == 200){
                     outlietContext.openAlertModal(datas.msg, 1);
                     outlietContext.getCartLength();
-                    navigate("/product");   
+                    navigate("/product");
+                } else {
+                    throw new Error("Gagal melakukan pembayaran!");
+                }
+            }).catch((err) => {
+                outlietContext.openAlertModal(err.message, 0);
+            })
+        } else {
+             axios.post(`${apiuri}order/payment/procced`, data)
+            .then((res) => {
+                const datas = res.data;
+                if (datas.status == 200){
+                    getTokenizer(datas.data);
                 } else {
                     throw new Error("Gagal melakukan pembayaran!");
                 }
@@ -129,12 +236,11 @@ const Payment = () => {
     }
 
     let productCard;
-
+        
     if (products.length > 0){
         productCard = products.map(product=> (
-             <CartProduct data={product} key={product.id}/>
-        ))
-
+            <CartProduct data={product} key={product.id} action={{actionUpdateQuantity}}/>
+        ));
     } else {
         productCard = <p>Tidak ada data</p>
     }

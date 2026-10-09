@@ -21,6 +21,7 @@ class OrderController {
             } = req.body;
             const user = await User.findById(idUser);
             const cashback = totalPayment - totalPrice;
+
             if (cashback < 0){
                 throw new Error("Uang pembayaran tidak boleh kurang dari total bayar");
             }
@@ -39,35 +40,64 @@ class OrderController {
                 checkoutProduct = Promise.all(checkoutProduct).then((res) => {
                     return res;
                 });
-
             }
 
-            
+            const order = new Order();
+            let payType;
+
+
             if (paymentType == 1){
-                let payType = "CASH";
+                payType = "CASH";
+                order.status = "Terbayar";
+            } else {
+                payType = "QRIS";
+                order.status = "Belum Dibayar";
+            }
 
-                const order = new Order();
-                order.payment_type = payType;
-                order.customer_name = customerName;
-                order.order_date = date;
-                order.total_price = totalPrice;
-                order.total_payment = totalPayment;
-                order.cashback = cashback;
-                order.modified_by = user.name;
-                order.created_at = date;
-                order.product = await checkoutProduct
+            order.payment_type = payType;
+            order.customer_name = customerName;
+            order.order_date = date;
+            order.total_price = totalPrice;
+            order.total_payment = totalPayment;
+            order.cashback = cashback;
+            order.modified_by = user.name;
+            order.created_at = date;
+            order.product = await checkoutProduct
 
-                await order.save();
+            await order.save();
 
-                for (let i = 0; i < idCart.length; i++) {
-                    await Cart.findByIdAndDelete(idCart[i]);
+            for (let i = 0; i < idCart.length; i++) {
+                await Cart.findByIdAndDelete(idCart[i]);
+            }
+
+
+            if (paymentType == 2){
+
+                const data = {
+                    order_id: order._id,
+                    gross_amount: order.total_price,
+                    customer_name: order.customer_name
                 }
+
+                return res.status(200).json({data, status: 200});
             }
 
             return res.status(200).json({msg: "Pembayaran berhasil", status: 200});
         } catch (error) {
-            return res.status(200).json({msg: error.msg, status: 500});
+            return res.status(200).json({msg: error.message, status: 500});
             
+        }
+    }
+
+    deelteOrder = async (req, res) => {
+        try {
+            const {orderId}  = req.body;
+
+            await Order.findByIdAndDelete(orderId);
+
+            return res.status(200).json({msg: "Berhasil hapus order", status: 200});
+        } catch (err) {
+            return res.status(200).json({msg: err.message, status: 500});
         }
     }
 }

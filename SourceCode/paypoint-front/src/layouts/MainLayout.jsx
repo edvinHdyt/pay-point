@@ -115,6 +115,23 @@ const MainLayout = () => {
         setIsModalOpen(false);
     }
 
+    // useEffect(() => {
+    //     const midtransScriptUrl = "https://app.sandbox.midtrans.com/snap/snap.js";
+
+    //     const existingScript = document.querySelector(`script[src="${midtransScriptUrl}"]`);
+
+    //     if (!existingScript){
+    //         const scriptTag = document.createElement('script');
+    //         scriptTag.async = true;
+    //         scriptTag.src = midtransScriptUrl;
+    //         scriptTag.setAttribute('data-client-key', import.meta.env.VITE_CLIENT_KEY);
+            
+    
+    //         document.body.appendChild(scriptTag);
+    //     }
+
+    // }, []);
+
 
     const userLogin = localStorage.getItem(import.meta.env.VITE_KEY_USERLOGIN) == null ? null :  JSON.parse(localStorage.getItem(import.meta.env.VITE_KEY_USERLOGIN));
     const apiuri = import.meta.env.VITE_API_URL;

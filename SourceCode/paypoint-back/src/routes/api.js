@@ -15,6 +15,7 @@ const categoryController = new CategoryController();
 const productController = new ProductController();
 const cartController = new CartController();
 const orderController = new OrderController();
+const authorizationMidtrans = new Authorization();
 const app = express();
 app.use(express.json());
 
@@ -23,7 +24,9 @@ const upload = multer({storage: storage})
 
 const allowedOrigins = [
   'http://localhost:5173', // Your frontend origin
-  'http://127.0.0.1:5173'  // In case localhost resolves differently
+  'http://127.0.0.1:5173',  // In case localhost resolves differently
+  "https://app.sandbox.midtrans.com",
+  "https://snap-assets.sandbox.midtrans.com"
 ];
 
 const corsOptions = {
@@ -104,6 +107,10 @@ app.post("/order/payment/procced", checkUserExist, (req, res) => {
     orderController.addNewOrder(req, res);
 });
 
+app.post("/order/payment/procced/get/token", checkUserExist, (req, res) => {
+    authorizationMidtrans.getToken(req, res);
+});
+
 app.post("/product/add",upload.single('fileProduct'), checkUserExist,  (req,  res) => {
     productController.addProduct(req, res);
 });
@@ -151,6 +158,10 @@ app.delete("/category/delete/:id", checkUserExistWithGet, (req, res) => {
 
 app.delete("/cart/delete/:idCart", checkUserExistWithGet, (req, res) =>{
     cartController.deleteCartById(req, res);
+});
+
+app.delete("/order/delete/:id", checkUserExistWithGet, (req,res) => {
+    orderController.deelteOrder(req, res);
 });
 
 app.delete("/product/delete/:id", checkUserExistWithGet, (req, res) => {

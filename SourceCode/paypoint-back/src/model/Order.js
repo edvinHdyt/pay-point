@@ -35,6 +35,11 @@ const orderSchema = new mongoose.Schema({
         type: Array,
         required: true
     },
+    status: {
+        type: String,
+        enum: ["Belum Dibayar", "Terbayar"],
+        default: "Belum Dibayar"
+    },
     modified_by: {
         type: String,
         max: 50,

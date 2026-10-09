@@ -3,6 +3,9 @@ import { Link, useNavigate } from "react-router-dom";
 import TitlePage from "./TitlePage";
 import { BtnPrimary } from "./Button";
 import axios from "axios";
+import getCookie from "../lib/GetCookie";
+import CalculateTotalPrice from "../lib/CalculateTotalPrice";
+import updateQuantity from "../lib/UpdateQuantity";
 
 const CartProduct = (props) => {
     const product = props.data.product;
@@ -22,14 +25,14 @@ const CartProduct = (props) => {
     const increseQuantity = () => {
         const liveQuantityVal = quantity + 1;
         setQuantity(quantity + 1);
-        props.action.updateQuantity(props.data.id, liveQuantityVal);
+        props.action.actionUpdateQuantity(liveQuantityVal, props.data);
     }
 
     const decreseQuantity = () => {
         if (quantity > 1){
             const liveQuantityVal = quantity - 1;
             setQuantity(quantity - 1);
-            props.action.updateQuantity(props.data.id, liveQuantityVal);
+            props.action.actionUpdateQuantity(liveQuantityVal, props.data);
         } else {
             props.action.deleteCartAction(props.data.id);
         }
@@ -80,54 +83,28 @@ const ModalCart = (props) => {
     const [isHidden, setIsHidden] = useState(true);
     const [cartData, setCartData] = useState([]);
     const [totalPrice, setTotalPrice] = useState(0);
-    const userLogin = props.action.userLogin;
-    const apiuri = import.meta.env.VITE_API_URL;
+    const {userLogin, apiuri} = getCookie();
     const getCartLengthF = props.action.getCartLength;
     const navigate = useNavigate();
 
-    const newTotalPrice = (data) => {
-        let total = 0;
 
-        if (data.length > 0){
-            data.forEach(elm => {
-                total += elm.product.price * elm.quantity;
-            });
-        }
-
-        return total;
-    }
-
-    const updateQuantity = (cartId, newQuantity) => {
-        let obj = {
-            cartId,
-            quantity: newQuantity,
-            email: userLogin.email
-        };
-
+    const actionUpdateQuantity = async (liveQuantityVal, cartDataProccess) => {
+        const newCartData = await updateQuantity(liveQuantityVal, cartDataProccess);
         
-        axios.patch(`${apiuri}cart/update/quantity`, obj)
-        .then((res) => {
-            const data = res.data;
-            if(data.status == 200){
-                const arrId = cartData.map((elm, i) => {
-                     if (elm.id == cartId){
-                         return i
-                     }
-                 }).filter((elm) => elm != undefined);
-     
-                 let newArrCart = cartData;
-                 newArrCart[arrId].quantity = newQuantity;
-                 
-                 setCartData(newArrCart);
-     
-                const total = newTotalPrice(cartData);
-                 setTotalPrice(total);
-            } else {
-                throw new Error("Gagal memperbaharui quantity");
-            }
-        }).catch((err) => {
-            props.openAlertModal(err.message, 0)
-        })
+        if (newCartData != false){
+            let oldCartData = cartData;
+            oldCartData = oldCartData.map((data) => {
+                if (data.id == newCartData.id){
+                    data.quantity = newCartData.quantity;
+                }
+
+                return data;
+            });
+            
+            setCartData(oldCartData);
+
+            setTotalPrice(CalculateTotalPrice(cartData));
+        }
     }
 
     const rpFormatter = new Intl.NumberFormat("id-ID", {
@@ -147,7 +124,7 @@ const ModalCart = (props) => {
                         setIsCartEmpty(false);
                     }
 
-                    const total = newTotalPrice(data.cart);
+                    const total = CalculateTotalPrice(data.cart);
                     setTotalPrice(total);
                     setCartData(data.cart);
                 } else {
@@ -199,7 +176,7 @@ const ModalCart = (props) => {
 
                 setCartData(newArrCart);
                 
-                const total = newTotalPrice(newArrCart);
+                const total = CalculateTotalPrice(newArrCart);
                 setTotalPrice(total);
             } else {
                 throw new Error("Gagal menghapus item");
@@ -210,7 +187,6 @@ const ModalCart = (props) => {
     }
 
     const redirectPaymentPage = () => {
-        console.log(props.action.cartLength);
         const cartLengt = props.action.cartLength;
         if (cartLengt == 0){
             props.openAlertModal("Tidak ada item di cart", 0);
@@ -240,7 +216,7 @@ const ModalCart = (props) => {
 
                     <div className="overflow-y-auto max-h-60 mt-3" id="products">
                         {cartData.map((cart) => (
-                            <CartProduct data={cart} payment={false} action={{updateQuantity, apiuri, userLogin, openAlertModalF, countItem, getCartLengthF, deleteCartAction}} key={cart.id}/>
+                            <CartProduct data={cart} payment={false} action={{actionUpdateQuantity, apiuri, userLogin, openAlertModalF, countItem, getCartLengthF, deleteCartAction}} key={cart.id}/>
                         ))}
                     </div>
                 </div>
