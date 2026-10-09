@@ -62,6 +62,7 @@ class OrderController {
             order.cashback = cashback;
             order.modified_by = user.name;
             order.created_at = date;
+            order.updated_at = date;
             order.product = await checkoutProduct
 
             await order.save();
@@ -89,7 +90,7 @@ class OrderController {
         }
     }
 
-    deelteOrder = async (req, res) => {
+    deleteOrder = async (req, res) => {
         try {
             const {orderId}  = req.body;
 
@@ -98,6 +99,32 @@ class OrderController {
             return res.status(200).json({msg: "Berhasil hapus order", status: 200});
         } catch (err) {
             return res.status(200).json({msg: err.message, status: 500});
+        }
+    }
+
+    updateStatusOrder = async(req,res) => {
+        try {
+            const date = new Date((new Date).toLocaleString("en-US", {
+                timeZone: "Asia/Jakarta"
+            }));
+            const {orderId, status, idUser} = req.body;
+
+            const user = await User.findById(idUser);
+            
+            if(user == undefined || user.length == 0){
+                throw new Error("User tidak ketemu!");
+            }
+
+            const order = await Order.findById(orderId);
+            order.status = status;
+            order.updated_at = date;
+            order.modified_by = user.name;
+            await order.save();
+
+            return res.status(200).json({msg: "Berhasil update status", status: 200});
+        } catch (err) {
+            console.log(err.message);
+            return res.status(200).json({msg: error.message, status: 500});
         }
     }
 }

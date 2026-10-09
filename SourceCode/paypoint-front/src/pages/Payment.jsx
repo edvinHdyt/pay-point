@@ -84,6 +84,22 @@ const Payment = () => {
         setchargeTotal(charge);
     }
 
+    const updateStatusOrder = (orderId, status) => {
+        if (orderId == undefined){
+            throw new Error("Order id kosong");
+        }
+
+        axios.patch(`${apiuri}order/update/status/${orderId}`, {email, orderId, status, idUser})
+        .then((res) => {
+            const datas = res.data;
+            if (datas.status != 200){
+                throw new Error("Gagal update status");
+            }
+        }).catch((err) => {
+            throw new Error(err);
+        })
+    }
+
     const getTokenizer = (data) => {
         axios.post(`${apiuri}order/payment/procced/get/token`, {
             email: email,
@@ -95,6 +111,7 @@ const Payment = () => {
             if (datas.status == 200){   
                 window.snap.pay(datas.data.token, {
                     onSuccess: () => {
+                        updateStatusOrder(data.order_id, "Terbayar");
                         outlietContext.getCartLength();
                         navigate("/product");
                         outlietContext.openAlertModal("Pembayaran berhasil!", 1);

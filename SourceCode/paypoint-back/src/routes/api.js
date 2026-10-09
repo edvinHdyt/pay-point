@@ -161,7 +161,7 @@ app.delete("/cart/delete/:idCart", checkUserExistWithGet, (req, res) =>{
 });
 
 app.delete("/order/delete/:id", checkUserExistWithGet, (req,res) => {
-    orderController.deelteOrder(req, res);
+    orderController.deleteOrder(req, res);
 });
 
 app.delete("/product/delete/:id", checkUserExistWithGet, (req, res) => {
@@ -182,6 +182,10 @@ app.patch("/product/update/:id",upload.single('fileProduct'), checkUserExist, (r
 
 app.patch("/auth/verify/:token", (req, res) => {
     authenticationController.verifyEmail(req, res);
+});
+
+app.patch("/order/update/status/:id", checkUserExist, (req, res) => {
+    orderController.updateStatusOrder(req, res);
 });
 
 export default app;
