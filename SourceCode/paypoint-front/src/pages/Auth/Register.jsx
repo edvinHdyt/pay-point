@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { LoginCard, MainCard } from "../../Components/MainCard";
 import { Link } from "react-router-dom";
 import {DangerAlert, SuccessAlert, WarningAlert} from "../../Components/Alert";
@@ -104,6 +104,23 @@ const Register = () => {
 
         setIsProcessLogin(false);
     }
+
+    useEffect(() => {
+        document.getElementsByTagName("form")[0].addEventListener("keypress", (e) => {
+            if (e.which == 13){
+                registerAction();
+            }
+        });
+
+        return(() => {
+        document.getElementsByTagName("form")[0].addEventListener("keypress", (e) => {
+            if (e.which == 13){
+                registerAction();
+            }
+        });
+        })
+    });
+
 
     return (
         <div className="flex md:flex-row-reverse flex-col h-[92vh] overflow-hidden w-full">

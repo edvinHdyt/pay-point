@@ -48,7 +48,7 @@ const Verification = () => {
                 setIsWarningAlertHide(true);
             }, 0)
         })
-    }, [apiUrl, token]);
+    }, [apiUrl, token, navigate]);
 
     const sendEmailVerify = async () => {
         const email = document.getElementById("email").value;

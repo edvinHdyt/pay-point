@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { LoginCard, MainCard } from "../../Components/MainCard";
 import { Link, Navigate, useNavigate, useOutletContext } from "react-router-dom";        
 import axios from "axios";
@@ -84,8 +84,23 @@ const Login = () => {
             setIsDangerAlertHidden(false);
             setAlertMsg(error.message);
         }
-        
     }
+
+    useEffect(() => {
+        document.getElementsByTagName("form")[0].addEventListener("keypress", (e) => {
+            if (e.which == 13){
+                loginHandling();
+            }
+        });
+
+        return(() => {
+        document.getElementsByTagName("form")[0].addEventListener("keypress", (e) => {
+            if (e.which == 13){
+                loginHandling();
+            }
+        });
+        })
+    });
 
     return (
         <div className="flex md:flex-row flex-col h-[92vh] overflow-hidden w-full">
