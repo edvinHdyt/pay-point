@@ -209,11 +209,15 @@ const Payment = () => {
             return product.id;
         });
 
+        const quantities = products.map((product) => {
+            return product.quantity;
+        });
 
         const data = {
             email,
             idUser,
             idCart,
+            quantities,
             products: idProducts,
             totalPrice: payTotal,
             totalPayment: payment,

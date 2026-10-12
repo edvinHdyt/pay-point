@@ -2,6 +2,8 @@ import Order from "../model/Order.js";
 import User from "../model/User.js";
 import {Product} from "../model/Product.js"
 import Cart from "../model/Cart.js";
+import PaymentType from "../utils/PaymentType.js";
+import TIMEFORMAT from "../utils/Time.js";
 
 class OrderController {
     addNewOrder = async (req, res) => {
@@ -17,7 +19,8 @@ class OrderController {
                 customerName,
                 totalPrice,
                 totalPayment,
-                products
+                products,
+                quantities
             } = req.body;
             const user = await User.findById(idUser);
             const cashback = totalPayment - totalPrice;
@@ -32,25 +35,28 @@ class OrderController {
 
             let checkoutProduct;
             if (products.length > 0){
+                let i = 0;
                 checkoutProduct = products.map(async (id) => {
+                    
                     let product = await Product.findById(id);
-                    return {id, name: product.product_name};
+                    let quantity = quantities[i];
+                    i++;
+                    return  {id, name: product.product_name, price: product.price, quantity};
                 });
                 
                 checkoutProduct = Promise.all(checkoutProduct).then((res) => {
                     return res;
                 });
             }
-
             const order = new Order();
             let payType;
 
 
             if (paymentType == 1){
-                payType = "CASH";
+                payType = PaymentType.CASH;
                 order.status = "Terbayar";
             } else {
-                payType = "QRIS";
+                payType = paymentType.QRIS;
                 order.status = "Belum Dibayar";
             }
 
@@ -121,11 +127,66 @@ class OrderController {
             order.modified_by = user.name;
             await order.save();
 
-            return res.status(200).json({msg: "Berhasil update status", status: 200});
+        return res.status(200).json({msg: "Berhasil update status", status: 200});
         } catch (err) {
-            console.log(err.message);
             return res.status(200).json({msg: error.message, status: 500});
         }
+    }
+
+    getAllOrder = async (req, res) => {
+        try {
+            const orders = await Order.find();
+            const newOrder = this.makeOrder(orders);
+
+            res.status(200).json({data: newOrder, status: 200});
+        } catch (err) {
+            res.status(200).json({msg: err.message, status: 500});
+        }
+    }
+
+    getOrderByTime = async (req, res) => {
+        try {
+            let {startDate, endDate} = req.query;
+
+            startDate = TIMEFORMAT.tz(startDate).startOf("day").toDate();
+            endDate = TIMEFORMAT.tz(endDate).endOf("day").toDate();
+
+            const orders = await Order.find({
+                order_date: {
+                    $gte: startDate,
+                    $lte: endDate,
+                }
+            });
+            
+            const newOrder = this.makeOrder(orders);
+            res.status(200).json({data: newOrder, status: 200});
+        } catch (err) {
+            return res.status(200).json({msg: err.message});
+        }
+    }
+
+    makeOrder = (orders) => {
+        return orders.map((order, i) => {
+            let obj = [];
+
+            order.product.forEach((elm, i) => {
+                obj.push({
+                    id: order._id,
+                    customer_name: order.customer_name,
+                    product_name: order.product[i].name,
+                    product_price: order.product[i].price,
+                    quantity: order.product[i].quantity,
+                    price: order.total_price,
+                    total_payment: order.total_payment,
+                    cashback: order.cashback,
+                    order_date: order.created_at,
+                    status: order.status,
+                    manage_by: order.modified_by
+                })
+            });
+
+            return obj;
+        });
     }
 }
 

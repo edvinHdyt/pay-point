@@ -51,9 +51,12 @@ const SalesReport = () => {
                             <th>Customer Name</th>
                             <th>Product Name</th>
                             <th>Quantity</th>
-                            <th>Price</th>
                             <th>Payment Type</th>
                             <th>Order Date</th>
+                            <th>Status</th>
+                            <th>Price</th>
+                            <th>Total Price</th>
+                            <th>Cashback</th>
                         </tr>
                     </thead>
 

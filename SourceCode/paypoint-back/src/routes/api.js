@@ -148,8 +148,20 @@ app.get("/cart/get-all/:idUser", checkUserExistWithGet, (req, res) => {
     cartController.getAllCartByIdUser(req, res);
 });
 
+app.get("/cart/get-all/:idUser", checkUserExistWithGet, (req, res) => {
+    cartController.getAllCartByIdUser(req, res);
+});
+
 app.get("/cart/get-length/:idUser", checkUserExistWithGet, (req, res) => {
     cartController.getLengthCartByIdUser(req, res);
+});
+
+app.get("/order/get-all", checkUserExistWithGet, (req, res) => {
+    orderController.getAllOrder(req, res);
+});
+
+app.get("/order/get/by-time/", checkUserExistWithGet, (req, res) => {
+    orderController.getOrderByTime(req, res);
 });
 
 app.delete("/category/delete/:id", checkUserExistWithGet, (req, res) => {
